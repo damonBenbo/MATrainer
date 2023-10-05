@@ -4,7 +4,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Schema
 
-![MATrainer_Schema](https://github.com/damonBenbo/MATrainer/assets/115174854/ba70870c-f495-42b7-bf60-263fc051ee0e)
+![MATrainer_Schema](https://github.com/damonBenbo/MATrainer/assets/115174854/f5d5eabe-f61e-4aea-b120-1ea03381122d)
 
 
 ## Available Scripts
