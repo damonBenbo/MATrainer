@@ -63,7 +63,7 @@ const createTablesQueries = [
   `CREATE TABLE IF NOT EXISTS user_weapons (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id),
-    form_id INTEGER REFERENCES weapons(id),
+    weapon_id INTEGER REFERENCES weapons(id),
     user_notes VARCHAR(255)
   )`,
 
