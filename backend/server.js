@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const db = require('./db');
+const bcrypt = require('bcrypt');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -26,17 +27,52 @@ app.get('/api/users', (req, res) => {
 });
 
 // Adding user to db
-app.post('/api/users', (req, res) => {
+app.post('/api/users', async (req, res) => {
   const { username, email, password } = req.body;
-  const query = 'INSERT INTO users (username, email, password) VALUES ($1, $2, $3)';
 
-  db.query(query, [username, email, password], (err, result) => {
+  // Hash the user's password
+  const hashedPassword = await bcrypt.hash(password, 10); // 10 is the number of salt rounds
+
+  // Insert the hashed password into the database
+  const query = 'INSERT INTO users (username, email, password) VALUES ($1, $2, $3)';
+  db.query(query, [username, email, hashedPassword], (err, result) => {
     if (err) {
       console.error('Error adding user', err);
-      res.status(500).json({ error: 'Error adding user'});
+      res.status(500).json({ error: 'Error adding user' });
     } else {
       console.log('User added successfully');
-      res.status(201).json({ message: 'User added successfully'});
+      res.status(201).json({ message: 'User added successfully' });
+    }
+  });
+});
+
+// User login and authentication
+app.post('/api/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  // Retrieve the hashed password from the database
+  const query = 'SELECT * FROM users WHERE email = $1';
+  db.query(query, [email], async (err, result) => {
+    if (err) {
+      console.error('Error fetching user', err);
+      res.status(500).json({ error: 'Error fetching user' });
+    } else {
+      if (result.rows.length === 0) {
+        res.status(401).json({ error: 'User not found' });
+      } else {
+        const user = result.rows[0];
+
+        // Compare the provided password with the stored hash
+        const passwordMatch = await bcrypt.compare(password, user.password);
+
+        if (passwordMatch) {
+          // Passwords match, user is authenticated
+          res.status(200).json({ message: 'Login successful' });
+        } else {
+          // Passwords do not match
+          res.status(401).json({ error: 'Invalid password' });
+        }
+      }
     }
   });
 });

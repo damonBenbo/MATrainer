@@ -1,0 +1,18 @@
+h1, h2 {
+    text-align: center;
+}
+
+p {
+    text-align: center;
+}
+
+.iframe {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.popular-techniques {
+    background-color: #f1faee;
+    border-radius: 50px;
+}

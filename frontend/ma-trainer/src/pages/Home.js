@@ -1,26 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { css } from '@emotion/react';
-
-const containerStyle = css`
-  text-align: center;
-`;
-
-const headingStyle = css`
-  font-size: 24px;
-  color: #333;
-`;
-
-const listStyle = css`
-  list-style: none;
-  padding: 0;
-`;
-
-const listItemStyle = css`
-  border: 1px solid #ddd;
-  margin: 10px;
-  padding: 10px;
-`;
+import './Home.css';
 
 function Home() {
   const [techniques, setTechniques] = useState([]);
@@ -28,7 +8,7 @@ function Home() {
   useEffect(() => {
     async function fetchTechniques() {
       try {
-        const response = await axios.get('/api/techniques');
+        const response = await axios.get('http://localhost:5000/api/techniques');
         setTechniques(response.data);
       } catch (error) {
         console.error('Error fetching techniques:', error);
@@ -45,28 +25,33 @@ function Home() {
   }
 
   return (
-    <div css={containerStyle}>
-      <h1 css={headingStyle}>Welcome to My Martial Arts Trainer!</h1>
-      <p>Here you can explore and learn martial arts techniques.</p>
+    <div className="greeting">
+      <h1>Welcome to Martial Arts Trainer!</h1>
+      <p>Learn something new, or train your subject!</p>
 
+    <div className="popular-techniques">
       <h2>Popular Techniques</h2>
-      <ul css={listStyle}>
+      <ul>
         {techniques.map((technique) => (
-          <li key={technique.id} css={listItemStyle}>
+          <li key={technique.id}>
             <strong>{technique.name}</strong>
             <p>{technique.description}</p>
             
             {/* Embed the YouTube video */}
+            <div className="iframe">
             <iframe
-              width="560"
-              height="315"
+              title="Video Player"
+              width="280"
+              height="155"
               src={`https://www.youtube.com/embed/${getYouTubeVideoId(technique.video_url)}`}
               frameborder="0"
               allowfullscreen
             ></iframe>
+            </div>
           </li>
         ))}
       </ul>
+      </div>
     </div>
   );
 }
