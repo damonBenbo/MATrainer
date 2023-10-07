@@ -16,7 +16,7 @@ const createTablesQueries = [
 
   `CREATE TABLE IF NOT EXISTS techniques (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
+    name VARCHAR(255) UNIQUE NOT NULL,
     description text NOT NULL,
     video_url text,
     created_by INTEGER REFERENCES users(id)
@@ -24,7 +24,7 @@ const createTablesQueries = [
 
   `CREATE TABLE IF NOT EXISTS patterns (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
+    name VARCHAR(255) UNIQUE NOT NULL,
     description text NOT NULL,
     video_url text,
     created_by INTEGER REFERENCES users(id)
@@ -32,7 +32,7 @@ const createTablesQueries = [
 
   `CREATE TABLE IF NOT EXISTS forms (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
+    name VARCHAR(255) UNIQUE NOT NULL,
     description text NOT NULL,
     video_url text,
     created_by INTEGER REFERENCES users(id)
@@ -40,7 +40,7 @@ const createTablesQueries = [
 
   `CREATE TABLE IF NOT EXISTS weapons (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
+    name VARCHAR(255) UNIQUE NOT NULL,
     description text NOT NULL,
     img text,
     created_by INTEGER REFERENCES users(id)
