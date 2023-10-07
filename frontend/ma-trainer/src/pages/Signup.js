@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import './Signup.css';
 
 function Signup() {
   const [formData, setFormData] = useState({
@@ -26,7 +27,7 @@ function Signup() {
     }
 
     try {
-      const response = await axios.post('/api/users', formData); // Adjust the endpoint
+      const response = await axios.post('http://localhost:5000/api/users', formData); // Adjust the endpoint
       if (response.status === 201) {
         // Successful registration
         // Redirect to the login page or show a success message
@@ -44,6 +45,7 @@ function Signup() {
     <div>
       <h2>Signup</h2>
       {error && <p className="error">{error}</p>}
+      <div className="signUpForm">
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="username">Username</label>
@@ -87,6 +89,7 @@ function Signup() {
         </div>
         <button type="submit">Sign Up</button>
       </form>
+      </div>
     </div>
   );
 }

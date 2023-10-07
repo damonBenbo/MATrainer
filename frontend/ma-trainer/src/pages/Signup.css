@@ -1,0 +1,21 @@
+.signUpForm {
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    text-align: center; 
+    background-color: #f1faee;
+    border-radius: 50px;
+    padding: 1rem;
+  }
+  
+  input {
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
+    margin-bottom: 10px; 
+  }
+  
+  label {
+    margin-bottom: 5px; 
+  }

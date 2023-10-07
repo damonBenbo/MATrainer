@@ -27,7 +27,7 @@ app.get('/api/users', (req, res) => {
 });
 
 // Adding user to db
-app.post('/api/users', async (req, res) => {
+app.post('/api/sign-up', async (req, res) => {
   const { username, email, password } = req.body;
 
   // Hash the user's password
