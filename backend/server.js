@@ -3,14 +3,54 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const db = require('./db');
 const bcrypt = require('bcrypt');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 
 const app = express();
 const port = process.env.PORT || 5000;
 
-app.use(cors());
+app.use(cors({ origin: 'http://localhost:3000' }));
 app.use(bodyParser.json());
+app.use(passport.initialize());
+app.use(passport.session());
 
 db.connect();
+
+// Define a LocalStrategy for username and password authentication
+passport.use(new LocalStrategy(
+  {
+    usernameField: 'email', // Change this to your desired username field
+    passwordField: 'password', // Change this to your desired password field
+  },
+  async (email, password, done) => {
+    // Retrieve the user by email from your database
+    const user = await getUserByEmail(email);
+
+    if (!user) {
+      return done(null, false, { message: 'User not found' });
+    }
+
+    // Compare the provided password with the hashed password stored in the database
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
+      return done(null, false, { message: 'Invalid password' });
+    }
+
+    // If authentication is successful, return the user object
+    return done(null, user);
+  }
+));
+
+// Serialize and deserialize user data to/from session
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser(async (id, done) => {
+  const user = await getUserById(id);
+  done(null, user);
+});
 
 // Define routes for each table
 
@@ -26,7 +66,7 @@ app.get('/api/users', (req, res) => {
   });
 });
 
-// Adding user to db
+// Adding user to db for user signup
 app.post('/api/sign-up', async (req, res) => {
   const { username, email, password } = req.body;
 

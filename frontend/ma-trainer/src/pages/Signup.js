@@ -19,18 +19,21 @@ function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     // Basic client-side validation (you should add more)
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords don't match");
       return;
     }
-
+  
     try {
-      const response = await axios.post('http://localhost:5000/api/users', formData); // Adjust the endpoint
+      // Send the registration request without confirmPassword
+      const { confirmPassword, ...registrationData } = formData;
+      const response = await axios.post('http://localhost:5000/api/sign-up', registrationData);
+  
       if (response.status === 201) {
-        // Successful registration
-        // Redirect to the login page or show a success message
+        // Successful registration and login
+        // Redirect to the home page or show a success message
       }
     } catch (err) {
       if (err.response && err.response.data.error) {
