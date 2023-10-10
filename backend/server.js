@@ -1,13 +1,23 @@
 const express = require('express');
+const session = require('express-session');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const db = require('./db');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
+const password = require('./secrets');
 const LocalStrategy = require('passport-local').Strategy;
 
 const app = express();
 const port = process.env.PORT || 5000;
+
+app.use(
+  session({
+    secret: password,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 app.use(cors({ origin: 'http://localhost:3000' }));
 app.use(bodyParser.json());
