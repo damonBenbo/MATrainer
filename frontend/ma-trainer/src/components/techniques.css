@@ -12,18 +12,7 @@ p {
     align-items: center;
 }
 
-.popular-lists {
+.list-techniques {
     background-color: #f1faee;
     border-radius: 50px;
 }
-
-.weapon-img {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-.weapon-img img {
-    max-width: 250px;
-    max-height: 250px;
-  }
