@@ -49,7 +49,7 @@ function Home() {
           <li key={weapon.id}>
             <strong>{weapon.name}</strong>
             <p>{weapon.description}</p>
-            <div className="weapon-img">
+            <div alt="weapon image" className="weapon-img">
             <img src={weapon.img}></img>
             </div>
           </li>

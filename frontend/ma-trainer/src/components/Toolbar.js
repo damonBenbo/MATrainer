@@ -31,7 +31,7 @@ const ToolbarComponent = () => {
           Sign-up
         </Button>
         <Button color="inherit" onClick={handleLoginClick}>
-          Sign-in
+          Login
         </Button>
         {/* Add more buttons for navigation or actions */}
       </Toolbar>
