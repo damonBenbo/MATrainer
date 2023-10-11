@@ -13,44 +13,50 @@ const port = process.env.PORT || 5000;
 
 app.use(
   session({
-    secret: password,
+    secret: password, // Replace with a strong secret key
     resave: false,
     saveUninitialized: false,
   })
 );
-
-app.use(cors({ origin: 'http://localhost:3000' }));
+app.use(cors({ origin: 'http://localhost:3000' })); // Adjust the origin as needed
 app.use(bodyParser.json());
 app.use(passport.initialize());
 app.use(passport.session());
 
-db.connect();
+// Function to get a user by username
+async function getUserByUsername(username) {
+  const query = 'SELECT * FROM users WHERE username = $1';
+  const result = await db.query(query, [username]);
+  return result.rows[0];
+}
+
+// Function to get a user by ID
+async function getUserById(id) {
+  const query = 'SELECT * FROM users WHERE id = $1';
+  const result = await db.query(query, [id]);
+  return result.rows[0];
+}
 
 // Define a LocalStrategy for username and password authentication
-passport.use(new LocalStrategy(
-  {
-    usernameField: 'email', // Change this to your desired username field
-    passwordField: 'password', // Change this to your desired password field
-  },
-  async (email, password, done) => {
-    // Retrieve the user by email from your database
-    const user = await getUserByEmail(email);
+passport.use(new LocalStrategy(async function(username, password, done) {
+  try {
+    const user = await getUserByUsername(username);
 
     if (!user) {
-      return done(null, false, { message: 'User not found' });
+      return done(null, false, { message: 'Incorrect username or password.' });
     }
 
-    // Compare the provided password with the hashed password stored in the database
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (!passwordMatch) {
-      return done(null, false, { message: 'Invalid password' });
+      return done(null, false, { message: 'Incorrect username or password.' });
+    } else {
+      return done(null, user);
     }
-
-    // If authentication is successful, return the user object
-    return done(null, user);
+  } catch (err) {
+    return done(err);
   }
-));
+}));
 
 // Serialize and deserialize user data to/from session
 passport.serializeUser((user, done) => {
@@ -61,6 +67,8 @@ passport.deserializeUser(async (id, done) => {
   const user = await getUserById(id);
   done(null, user);
 });
+
+db.connect();
 
 // Define routes for each table
 
@@ -97,34 +105,9 @@ app.post('/api/sign-up', async (req, res) => {
 });
 
 // User login and authentication
-app.post('/api/login', async (req, res) => {
-  const { email, password } = req.body;
-
-  // Retrieve the hashed password from the database
-  const query = 'SELECT * FROM users WHERE email = $1';
-  db.query(query, [email], async (err, result) => {
-    if (err) {
-      console.error('Error fetching user', err);
-      res.status(500).json({ error: 'Error fetching user' });
-    } else {
-      if (result.rows.length === 0) {
-        res.status(401).json({ error: 'User not found' });
-      } else {
-        const user = result.rows[0];
-
-        // Compare the provided password with the stored hash
-        const passwordMatch = await bcrypt.compare(password, user.password);
-
-        if (passwordMatch) {
-          // Passwords match, user is authenticated
-          res.status(200).json({ message: 'Login successful' });
-        } else {
-          // Passwords do not match
-          res.status(401).json({ error: 'Invalid password' });
-        }
-      }
-    }
-  });
+app.post('/api/login', passport.authenticate('local'), (req, res) => {
+  // If the user reaches this point, authentication was successful.
+  res.status(200).json({ message: 'Login successful' });
 });
 
 // UserTechniques

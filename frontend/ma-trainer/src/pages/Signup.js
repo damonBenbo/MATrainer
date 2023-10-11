@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './Signup.css';
+import { withRouter } from 'react-router-dom'; // Import withRouter
 
-function Signup() {
+function Signup({ history }) { // Pass history as a prop
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -19,21 +20,22 @@ function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     // Basic client-side validation (you should add more)
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords don't match");
       return;
     }
-  
+
     try {
       // Send the registration request without confirmPassword
       const { confirmPassword, ...registrationData } = formData;
       const response = await axios.post('http://localhost:5000/api/sign-up', registrationData);
-  
+
       if (response.status === 201) {
         // Successful registration and login
-        // Redirect to the home page or show a success message
+        // Redirect to the home page
+        history.push('/'); // Redirect to the home page
       }
     } catch (err) {
       if (err.response && err.response.data.error) {
@@ -49,52 +51,52 @@ function Signup() {
       <h2>Signup</h2>
       {error && <p className="error">{error}</p>}
       <div className="signUpForm">
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="username">Username</label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="confirmPassword">Confirm Password</label>
-          <input
-            type="password"
-            id="confirmPassword"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-          />
-        </div>
-        <button type="submit">Sign Up</button>
-      </form>
+        <form onSubmit={handleSubmit}>
+          <div>
+            <label htmlFor="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <label htmlFor="confirmPassword">Confirm Password</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+            />
+          </div>
+          <button type="submit">Sign Up</button>
+        </form>
       </div>
     </div>
   );
 }
 
-export default Signup;
+export default withRouter(Signup); // Wrap your component with withRouter

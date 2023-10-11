@@ -1,63 +1,53 @@
 import React, { useState } from 'react';
-import axios from 'axios'; // Import Axios
 
-const Login = ({ onLogin }) => {
-  const [credentials, setCredentials] = useState({
-    email: '',
-    password: '',
-  });
+function Login({ onLogin }) {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setCredentials({ ...credentials, [name]: value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const handleLogin = async () => {
+    // Send a POST request to the server to authenticate the user
     try {
-      // Send a POST request to your server's login endpoint
-      const response = await axios.post('http://localhost:5000/api/login', credentials);
+      const response = await fetch('http://localhost:5000/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
 
-      // Assuming your server responds with a token or session data upon successful login
-      const token = response.data.token; // Adjust this based on your server response
+      if (response.status === 200) {
+        // Successful login, you can redirect the user or show a success message
+        console.log('Login successful');
 
-      // Call the onLogin function with the token or session data
-      onLogin(token);
+        // Pass the username to the onLogin function
+        onLogin(username);
+      } else {
+        // Handle login failure, display an error message, or redirect to the login page
+        console.error('Login failed');
+      }
     } catch (error) {
-      // Handle login error (e.g., display an error message to the user)
-      console.error('Login error:', error);
+      console.error('Error:', error);
     }
   };
 
   return (
-    <div className="login-form">
+    <div>
       <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="email">Email</label>
-          <input
-            type="text"
-            id="email"
-            name="email"
-            value={credentials.email}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={credentials.password}
-            onChange={handleChange}
-          />
-        </div>
-        <button type="submit">Login</button>
-      </form>
+      <input
+        type="text"
+        placeholder="Username"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+      <button onClick={handleLogin}>Log In</button>
     </div>
   );
-};
+}
 
 export default Login;
