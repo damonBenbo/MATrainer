@@ -40,10 +40,11 @@ const ToolbarComponent = () => {
         )}
         {isLoggedIn ? (
           // Render username and logout button for authenticated users
-          <>
-            <Typography variant="body1" sx={{ marginRight: 2 }}>
-              Welcome, {username}
-            </Typography>
+          <>          <Link to="/user" style={{ textDecoration: 'none' }}>
+          <Typography variant="body1" sx={{ marginRight: 2 }}>
+            Welcome, {username}
+          </Typography>
+        </Link>
             <Button color="inherit" onClick={handleLogout}>
               Logout
             </Button>

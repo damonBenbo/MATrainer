@@ -108,6 +108,8 @@ app.post('/api/sign-up', async (req, res) => {
 app.post('/api/login', passport.authenticate('local'), (req, res) => {
   // If the user reaches this point, authentication was successful.
   res.status(200).json({ message: 'Login successful' });
+
+  onLogin(username);
 });
 
 // UserTechniques
