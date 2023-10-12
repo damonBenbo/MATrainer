@@ -1,27 +1,16 @@
 const express = require('express');
-const session = require('express-session');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const db = require('./db');
 const bcrypt = require('bcrypt');
-const passport = require('passport');
+const jwt = require('jsonwebtoken');
 const password = require('./secrets');
-const LocalStrategy = require('passport-local').Strategy;
 
 const app = express();
 const port = process.env.PORT || 5000;
 
-app.use(
-  session({
-    secret: password, // Replace with a strong secret key
-    resave: false,
-    saveUninitialized: false,
-  })
-);
 app.use(cors({ origin: 'http://localhost:3000' })); // Adjust the origin as needed
 app.use(bodyParser.json());
-app.use(passport.initialize());
-app.use(passport.session());
 
 // Function to get a user by username
 async function getUserByUsername(username) {
@@ -37,36 +26,22 @@ async function getUserById(id) {
   return result.rows[0];
 }
 
-// Define a LocalStrategy for username and password authentication
-passport.use(new LocalStrategy(async function(username, password, done) {
-  try {
-    const user = await getUserByUsername(username);
+function authenticateJWT(req, res, next) {
+  const token = req.header('Authorization');
 
-    if (!user) {
-      return done(null, false, { message: 'Incorrect username or password.' });
-    }
-
-    const passwordMatch = await bcrypt.compare(password, user.password);
-
-    if (!passwordMatch) {
-      return done(null, false, { message: 'Incorrect username or password.' });
-    } else {
-      return done(null, user);
-    }
-  } catch (err) {
-    return done(err);
+  if (!token) {
+    return res.sendStatus(403); // Forbidden
   }
-}));
 
-// Serialize and deserialize user data to/from session
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
+  jwt.verify(token, secret, (err, user) => {
+    if (err) {
+      return res.sendStatus(403); // Forbidden
+    }
 
-passport.deserializeUser(async (id, done) => {
-  const user = await getUserById(id);
-  done(null, user);
-});
+    req.user = user; // Set the user data in the request
+    next(); // Proceed to the next middleware or route
+  });
+}
 
 db.connect();
 
@@ -105,11 +80,40 @@ app.post('/api/sign-up', async (req, res) => {
 });
 
 // User login and authentication
-app.post('/api/login', passport.authenticate('local'), (req, res) => {
-  // If the user reaches this point, authentication was successful.
-  res.status(200).json({ message: 'Login successful' });
+app.post('/api/login', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const user = await getUserByUsername(username);
 
-  onLogin(username);
+    if (!user) {
+      return res.status(401).json({ message: 'Incorrect username or password.' });
+    }
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
+      return res.status(401).json({ message: 'Incorrect username or password.' });
+    }
+
+    const token = jwt.sign({ username: user.username }, secret, { expiresIn: '1h' }); // Customize token payload and expiration
+    res.json({ token }); // Send the token to the client
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error.' });
+  }
+});
+
+// User Page
+app.get('/api/user-page/:username', authenticateJWT, (req, res) => {
+  const username = req.params.username;
+
+  const user = getUserByUsername(username);
+
+  if (!user) {
+    res.status(404).json({ error: 'User not found' });
+  } else {
+    res.status(200).json(user);
+  }
 });
 
 // UserTechniques

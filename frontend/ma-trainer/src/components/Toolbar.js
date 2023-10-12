@@ -1,23 +1,22 @@
 import React, { useState } from 'react';
 import { AppBar, Toolbar, Typography, Button } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom'; // Import useHistory
 
 import Login from './Login';
 
-const ToolbarComponent = () => {
+const ToolbarComponent = ({ userLoggedIn, username }) => {
   const [isLoginFormVisible, setIsLoginFormVisible] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [username, setUsername] = useState(''); // Store the user's username
+  const history = useHistory(); // Get the history object
 
   const handleLoginSuccess = (username) => {
     setIsLoggedIn(true);
-    setUsername(username); // Set the username when the user logs in
     setIsLoginFormVisible(false); // Hide the login form
   };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
-    setUsername(''); // Clear the username when the user logs out
+    history.push('/'); // Redirect to the home page
   };
 
   const handleLoginClick = () => {
@@ -40,11 +39,12 @@ const ToolbarComponent = () => {
         )}
         {isLoggedIn ? (
           // Render username and logout button for authenticated users
-          <>          <Link to="/user" style={{ textDecoration: 'none' }}>
-          <Typography variant="body1" sx={{ marginRight: 2 }}>
-            Welcome, {username}
-          </Typography>
-        </Link>
+          <>
+            <Link to={`/user/${username}`} style={{ textDecoration: 'none' }}>
+              <Typography variant="body1" sx={{ marginRight: 2 }}>
+                Welcome, {username}
+              </Typography>
+            </Link>
             <Button color="inherit" onClick={handleLogout}>
               Logout
             </Button>
