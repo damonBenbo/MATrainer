@@ -1,5 +1,5 @@
 const { Client } = require('pg');
-const password = require('./secrets');
+const {password} = require('./secrets');
 
 const client = new Client({
   user: 'postgres',

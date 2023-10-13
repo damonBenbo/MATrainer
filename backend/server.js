@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const db = require('./db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const password = require('./secrets');
+const {secret} = require('./secrets');
 
 const app = express();
 const port = process.env.PORT || 5000;
