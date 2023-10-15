@@ -12,19 +12,6 @@ const port = process.env.PORT || 5000;
 app.use(cors({ origin: 'http://localhost:3000' })); // Adjust the origin as needed
 app.use(bodyParser.json());
 
-// Function to get a user by username
-async function getUserByUsername(username) {
-  const query = 'SELECT * FROM users WHERE username = $1';
-  const result = await db.query(query, [username]);
-  return result.rows[0];
-}
-
-// Function to get a user by ID
-async function getUserById(id) {
-  const query = 'SELECT * FROM users WHERE id = $1';
-  const result = await db.query(query, [id]);
-  return result.rows[0];
-}
 
 function authenticateJWT(req, res, next) {
   const token = req.header('Authorization');
@@ -80,26 +67,25 @@ app.post('/api/sign-up', async (req, res) => {
 });
 
 // User login and authentication
-app.post('/api/login', async (req, res) => {
+app.post('/api/login', async (req, res, next) => {
   try {
     const { username, password } = req.body;
-    const user = await getUserByUsername(username);
+    const result = await db.query(
+      `SELECT password FROM users WHERE username = $1`,
+      [username]
+    );
+    const user = result.rows[0];
 
-    if (!user) {
-      return res.status(401).json({ message: 'Incorrect username or password.' });
+    if (user) {
+      if (await bcrypt.compare(password, user.password) === true) {
+        let token = jwt.sign({ username }, secret);
+        console.log(`${username}`);
+        return res.json({ token });
+      }
     }
-
-    const passwordMatch = await bcrypt.compare(password, user.password);
-
-    if (!passwordMatch) {
-      return res.status(401).json({ message: 'Incorrect username or password.' });
-    }
-
-    const token = jwt.sign({ username: user.username }, secret, { expiresIn: '1h' }); // Customize token payload and expiration
-    res.json({ token }); // Send the token to the client
+    console.error("Invalid user/password", 400);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error.' });
+    return next(err);
   }
 });
 

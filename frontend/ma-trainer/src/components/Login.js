@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom'; // Import useHistory
 
-function Login({ onLogin }) {
+
+const jwt = require('jsonwebtoken');
+const { secret } = require('capstone_2/MATrainer/backend/secrets');
+
+function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const history = useHistory(); // Get the history object
 
   const handleLogin = async () => {
-    // Send a POST request to the server to authenticate the user
     try {
       const response = await fetch('http://localhost:5000/api/login', {
         method: 'POST',
@@ -16,13 +21,21 @@ function Login({ onLogin }) {
       });
 
       if (response.status === 200) {
-        // Successful login, you can redirect the user or show a success message
-        console.log('Login successful');
-
-        // Pass the username to the onLogin function
-        onLogin(username);
+        const data = await response.json();
+        const { token } = data;
+        localStorage.setItem('token', token);
+      
+        // Decode the token to get user information
+        const decodedToken = jwt.decode(token);
+        if (decodedToken) {
+          const { username } = decodedToken;
+          setUserLoggedIn({ user: { username } });
+        }
+      
+        // Redirect to the home page
+        history.push('/');
       } else {
-        // Handle login failure, display an error message, or redirect to the login page
+        // Handle login failure
         console.error('Login failed');
       }
     } catch (error) {

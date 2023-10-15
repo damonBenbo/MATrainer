@@ -7,8 +7,6 @@ const UserPage = ({ match, userLoggedIn }) => {
   const [listName, setListName] = useState('');
   const [listDescription, setListDescription] = useState('');
 
-  // ... (previous code)
-
   const handleAddUserList = () => {
     // When the button is clicked, show the form
     setShowCreateListForm(true);
@@ -86,8 +84,6 @@ const UserPage = ({ match, userLoggedIn }) => {
           <button type="submit">Create List</button>
         </form>
       )}
-
-      {/* Add more content to display user-specific information */}
     </div>
   );
 };
