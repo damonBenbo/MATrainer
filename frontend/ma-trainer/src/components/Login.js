@@ -1,14 +1,10 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom'; // Import useHistory
+import { useHistory } from 'react-router-dom';
 
-
-const jwt = require('jsonwebtoken');
-const { secret } = require('capstone_2/MATrainer/backend/secrets');
-
-function Login() {
+function Login({ onLogin }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const history = useHistory(); // Get the history object
+  const history = useHistory();
 
   const handleLogin = async () => {
     try {
@@ -19,19 +15,18 @@ function Login() {
         },
         body: JSON.stringify({ username, password }),
       });
-
+  
       if (response.status === 200) {
         const data = await response.json();
-        const { token } = data;
+        console.log('Response data:', data);
+        const { token, username } = data; // Get the username from the response
+  
+        // Set both the token and username in local storage
         localStorage.setItem('token', token);
-      
-        // Decode the token to get user information
-        const decodedToken = jwt.decode(token);
-        if (decodedToken) {
-          const { username } = decodedToken;
-          setUserLoggedIn({ user: { username } });
-        }
-      
+        localStorage.setItem('username', username);;
+
+        onLogin();
+  
         // Redirect to the home page
         history.push('/');
       } else {

@@ -8,17 +8,25 @@ import ToolbarComponent from './components/Toolbar';
 import UserPage from './pages/UserPage'; // Import UserPage
 
 function App() {
+  const [userLoggedIn, setUserLoggedIn] = useState(false);
+
+  const handleLogin = () => {
+    setUserLoggedIn(true);
+  };
+
+  const handleLogout = () => {
+    setUserLoggedIn(false);
+  };
 
   return (
     <Router>
-      <ToolbarComponent />
+      <ToolbarComponent userLoggedIn={userLoggedIn}/>
       <Switch>
         <Route path="/" exact component={Home} />
         <Route path="/sign-up" component={Signup} />
-        <Route
-          path="/login"
-          component={Login}
-        />
+        <Route path="/login" >
+          <Login onLogin={handleLogin} />
+        </Route>
         <Route path="/logout" component={Logout} />
         <Route
           path={`/user/:username`}

@@ -12,24 +12,6 @@ const port = process.env.PORT || 5000;
 app.use(cors({ origin: 'http://localhost:3000' })); // Adjust the origin as needed
 app.use(bodyParser.json());
 
-
-function authenticateJWT(req, res, next) {
-  const token = req.header('Authorization');
-
-  if (!token) {
-    return res.sendStatus(403); // Forbidden
-  }
-
-  jwt.verify(token, secret, (err, user) => {
-    if (err) {
-      return res.sendStatus(403); // Forbidden
-    }
-
-    req.user = user; // Set the user data in the request
-    next(); // Proceed to the next middleware or route
-  });
-}
-
 db.connect();
 
 // Define routes for each table
@@ -78,9 +60,8 @@ app.post('/api/login', async (req, res, next) => {
 
     if (user) {
       if (await bcrypt.compare(password, user.password) === true) {
-        let token = jwt.sign({ username }, secret);
-        console.log(`${username}`);
-        return res.json({ token });
+        let token = jwt.sign({ username: user.username }, secret);
+        return res.json({ token, username });
       }
     }
     console.error("Invalid user/password", 400);
@@ -90,7 +71,7 @@ app.post('/api/login', async (req, res, next) => {
 });
 
 // User Page
-app.get('/api/user-page/:username', authenticateJWT, (req, res) => {
+app.get('/api/user-page/:username', (req, res) => {
   const username = req.params.username;
 
   const user = getUserByUsername(username);
