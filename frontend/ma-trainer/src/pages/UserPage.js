@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 
 const UserPage = ({ match, userLoggedIn }) => {
   const username = match.params.username;
@@ -7,6 +8,16 @@ const UserPage = ({ match, userLoggedIn }) => {
   const [listName, setListName] = useState('');
   const [listDescription, setListDescription] = useState('');
 
+  const history = useHistory(); // Add this line to use the history object
+
+  // Check if the logged-in user matches the user page
+  useEffect(() => {
+    if (!userLoggedIn || userLoggedIn.username !== username) {
+      // Redirect the user to another page or show an error message
+      history.push('/'); // Redirect to the home page
+    }
+  }, [userLoggedIn, username, history]);
+
   const handleAddUserList = () => {
     // When the button is clicked, show the form
     setShowCreateListForm(true);
@@ -14,17 +25,17 @@ const UserPage = ({ match, userLoggedIn }) => {
 
   const handleCreateListSubmit = async (e) => {
     e.preventDefault();
-  
+
     // Assuming you have the user_id available in your front end state or context
     const user_id = userLoggedIn.user.id;
-  
+
     // Prepare data to send to the server
     const data = {
       user_id: user_id,
       list_name: listName,
       list_description: listDescription,
     };
-  
+
     try {
       // Send a POST request to your server to create the user's list
       const response = await fetch('/api/createUserList', {
@@ -34,7 +45,7 @@ const UserPage = ({ match, userLoggedIn }) => {
         },
         body: JSON.stringify(data),
       });
-  
+
       if (response.ok) {
         // The list was created successfully
         setHasUserList(true);

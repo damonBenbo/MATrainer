@@ -5,6 +5,7 @@ const db = require('./db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const {secret} = require('./secrets');
+const authenticateJWT = require('./authenticateJWT');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -71,15 +72,21 @@ app.post('/api/login', async (req, res, next) => {
 });
 
 // User Page
-app.get('/api/user-page/:username', (req, res) => {
-  const username = req.params.username;
+app.get('/api/user-page/:username', authenticateJWT, (req, res) => {
+  const requestedUsername = req.params.username;
+  const loggedInUsername = req.user.username; // Get the username from the JWT payload
 
-  const user = getUserByUsername(username);
-
-  if (!user) {
-    res.status(404).json({ error: 'User not found' });
+  // Check if the requested username matches the logged-in user's username
+  if (requestedUsername === loggedInUsername) {
+    // Render or send data for the user's page
+    const user = getUserByUsername(requestedUsername);
+    if (!user) {
+      res.status(404).json({ error: 'User not found' });
+    } else {
+      res.status(200).json(user);
+    }
   } else {
-    res.status(200).json(user);
+    res.status(403).json({ error: 'Access denied' }); // Forbidden
   }
 });
 

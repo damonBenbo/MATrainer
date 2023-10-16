@@ -6,6 +6,16 @@ const ToolbarComponent = ({ userLoggedIn }) => {
   // Retrieve username from local storage
   const username = localStorage.getItem('username');
 
+  // Function to handle logout
+  const handleLogout = () => {
+    // Clear any user session data (e.g., token, user data) stored in localStorage
+    localStorage.removeItem('token'); // Clear the authentication token
+    localStorage.removeItem('username');
+
+    // Reload the page to ensure the changes take effect.
+    window.location.reload();
+  };
+
   return (
     <AppBar position="static" sx={{ backgroundColor: '#e63946' }}>
       <Toolbar>
@@ -20,7 +30,7 @@ const ToolbarComponent = ({ userLoggedIn }) => {
             <Button color="inherit" component={Link} to={`/user/${username}`}>
               Welcome, {username}
             </Button>
-            <Button color="inherit" component={Link} to="/logout">
+            <Button color="inherit" onClick={handleLogout}> {/* Use handleLogout */}
               Logout
             </Button>
           </>

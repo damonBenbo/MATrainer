@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Home from './pages/Home';
 import Signup from './pages/Signup';
 import Login from './components/Login'; // Import the Login component
-import Logout from './components/Logout';
 import ToolbarComponent from './components/Toolbar';
 import UserPage from './pages/UserPage'; // Import UserPage
 
@@ -27,7 +26,6 @@ function App() {
         <Route path="/login" >
           <Login onLogin={handleLogin} />
         </Route>
-        <Route path="/logout" component={Logout} />
         <Route
           path={`/user/:username`}
           component={UserPage}
