@@ -5,7 +5,7 @@ const db = require('./db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const {secret} = require('./secrets');
-const authenticateJWT = require('./authenticateJWT');
+const ensureLoggedIn = require('./ensureLoggedIn');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -14,6 +14,13 @@ app.use(cors({ origin: 'http://localhost:3000' })); // Adjust the origin as need
 app.use(bodyParser.json());
 
 db.connect();
+
+// Function to get a user by username
+async function getUserByUsername(username) {
+  const query = 'SELECT * FROM users WHERE username = $1';
+  const result = await db.query(query, [username]);
+  return result.rows[0];
+}
 
 // Define routes for each table
 
@@ -72,7 +79,7 @@ app.post('/api/login', async (req, res, next) => {
 });
 
 // User Page
-app.get('/api/user-page/:username', authenticateJWT, (req, res) => {
+app.get('/api/user/:username', ensureLoggedIn, (req, res) => {
   const requestedUsername = req.params.username;
   const loggedInUsername = req.user.username; // Get the username from the JWT payload
 

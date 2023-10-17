@@ -30,7 +30,7 @@ const ToolbarComponent = ({ userLoggedIn }) => {
             <Button color="inherit" component={Link} to={`/user/${username}`}>
               Welcome, {username}
             </Button>
-            <Button color="inherit" onClick={handleLogout}> {/* Use handleLogout */}
+            <Button color="inherit" onClick={handleLogout}>
               Logout
             </Button>
           </>

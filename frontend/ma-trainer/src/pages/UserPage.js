@@ -12,11 +12,40 @@ const UserPage = ({ match, userLoggedIn }) => {
 
   // Check if the logged-in user matches the user page
   useEffect(() => {
-    if (!userLoggedIn || userLoggedIn.username !== username) {
-      // Redirect the user to another page or show an error message
-      history.push('/'); // Redirect to the home page
+    async function fetchData() {
+      try {
+        const token = localStorage.getItem('token');
+        const storedUsername = localStorage.getItem('username'); // Use a different variable name
+  
+        if (!token) {
+          // No token found, the user is not logged in
+          history.push('/login'); // Redirect to the login page
+        } else {
+          console.log("Im inside else 1");
+          // Token found, send a request to the server to verify it
+          const response = await fetch(`http://localhost:5000/api/user/${storedUsername}`, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            },
+          });
+  
+          if (response.status === 200) {
+            // User is authorized to access the page
+            // You can fetch additional user data here if needed
+          } else {
+            // User is not authorized to access the page
+            console.log(response);
+            history.push('/'); // Redirect to the home page or show an error message
+          }
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
     }
-  }, [userLoggedIn, username, history]);
+  
+    fetchData();
+  }, [username, history]);
 
   const handleAddUserList = () => {
     // When the button is clicked, show the form

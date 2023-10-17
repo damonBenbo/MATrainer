@@ -13,10 +13,6 @@ function App() {
     setUserLoggedIn(true);
   };
 
-  const handleLogout = () => {
-    setUserLoggedIn(false);
-  };
-
   return (
     <Router>
       <ToolbarComponent userLoggedIn={userLoggedIn}/>
