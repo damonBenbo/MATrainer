@@ -1,87 +1,91 @@
+import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 
-const UserPage = ({ match, userLoggedIn }) => {
+const UserPage = ({ match }) => {
   const username = match.params.username;
   const [hasUserList, setHasUserList] = useState(false);
   const [showCreateListForm, setShowCreateListForm] = useState(false);
   const [listName, setListName] = useState('');
   const [listDescription, setListDescription] = useState('');
+  const [userData, setUserData] = useState(null);
+  const [userLists, setUserLists] = useState([]);
 
-  const history = useHistory(); // Add this line to use the history object
+  const history = useHistory();
 
-  // Check if the logged-in user matches the user page
   useEffect(() => {
     async function fetchData() {
       try {
         const token = localStorage.getItem('token');
-        console.log("Token", token);
-        const storedUsername = localStorage.getItem('username'); // Use a different variable name
-  
+
         if (!token) {
-          // No token found, the user is not logged in
-          history.push('/login'); // Redirect to the login page
+          history.push('/login');
         } else {
-          console.log("Im inside else 1");
-          // Token found, send a request to the server to verify it
-          const response = await fetch(`http://localhost:5000/api/user/${storedUsername}`, {
+          // Fetch user data
+          const userDataResponse = await fetch(`http://localhost:5000/api/user/${username}`, {
             method: 'GET',
             headers: {
               'Authorization': `Bearer ${token}`,
             },
           });
-  
-          if (response.status === 200) {
-            // User is authorized to access the page
-            // You can fetch additional user data here if needed
+
+          if (userDataResponse.status === 200) {
+            const userData = await userDataResponse.json();
+            setUserData(userData);
           } else {
-            // User is not authorized to access the page
-            console.log(response);
-            history.push('/'); // Redirect to the home page or show an error message
+            history.push('/');
+          }
+
+          // Fetch the user's lists
+          const userListsResponse = await fetch(`http://localhost:5000/api/user/${username}/lists`, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            },
+          });
+
+          if (userListsResponse.status === 200) {
+            const userListsData = await userListsResponse.json();
+            setUserLists(userListsData);
           }
         }
       } catch (error) {
         console.error('Error:', error);
       }
     }
-  
+
     fetchData();
   }, [username, history]);
 
   const handleAddUserList = () => {
-    // When the button is clicked, show the form
     setShowCreateListForm(true);
   };
 
   const handleCreateListSubmit = async (e) => {
     e.preventDefault();
 
-    // Assuming you have the user_id available in your front end state or context
-    const user_id = userLoggedIn.user.id;
+    if (!userData) {
+      console.error('User data not available');
+      return;
+    }
 
-    // Prepare data to send to the server
     const data = {
-      user_id: user_id,
       list_name: listName,
       list_description: listDescription,
     };
 
     try {
-      // Send a POST request to your server to create the user's list
-      const response = await fetch('/api/createUserList', {
-        method: 'POST',
+      const response = await axios.post('http://localhost:5000/api/createUserList', data, {
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
-        body: JSON.stringify(data),
       });
 
-      if (response.ok) {
-        // The list was created successfully
+      if (response.status === 201) {
         setHasUserList(true);
         setShowCreateListForm(false);
       } else {
-        // Handle errors if the request fails
         console.error('Failed to create user list');
       }
     } catch (error) {
@@ -92,12 +96,23 @@ const UserPage = ({ match, userLoggedIn }) => {
   return (
     <div>
       <h2>User Profile</h2>
-      <p>Welcome, {username}!</p>
+      {userData && (
+        <p>Welcome, {username}!</p>
+      )}
 
-      {hasUserList ? (
-        <p>You have a user list.</p>
+      {userLists.length > 0 ? (
+        <div>
+          <p>You have {userLists.length} user lists:</p>
+          <ul>
+            {userLists.map((list) => (
+              <li key={list.id}>
+                {list.list_name} - {list.list_description}
+              </li>
+            ))}
+          </ul>
+        </div>
       ) : (
-        <p>You don't have a user list yet.</p>
+        <p>You don't have any user lists yet.</p>
       )}
 
       <button onClick={handleAddUserList}>Create User List</button>

@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const {secret} = require('./secrets');
 const ensureLoggedIn = require('./ensureLoggedIn');
+const ensureAuth = require('./ensureAuth');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -17,10 +18,10 @@ db.connect();
 
 // Function to get a user by username
 async function getUserByUsername(username) {
-  const query = 'SELECT * FROM users WHERE username = $1';
+  const query = 'SELECT username FROM users WHERE username = $1';
   const result = await db.query(query, [username]);
   return result.rows[0];
-}
+};
 
 // Define routes for each table
 
@@ -72,7 +73,6 @@ app.post('/api/login', async (req, res, next) => {
           user_id: user.id, // Include user_id
           username: user.username // Include username
         }, secret);
-        console.log("Token:", token);
         return res.json({ token, username });
       }
     }
@@ -84,20 +84,15 @@ app.post('/api/login', async (req, res, next) => {
 
 // User Page
 app.get('/api/user/:username', ensureLoggedIn, (req, res) => {
-  const requestedUsername = req.params.username;
   const loggedInUsername = req.user.username; // Get the username from the JWT payload
 
-  // Check if the requested username matches the logged-in user's username
-  if (requestedUsername === loggedInUsername) {
-    // Render or send data for the user's page
-    const user = getUserByUsername(requestedUsername);
-    if (!user) {
-      res.status(404).json({ error: 'User not found' });
-    } else {
-      res.status(200).json(user);
-    }
+  // Render or send data for the user's page
+  const user = getUserByUsername(loggedInUsername);
+  
+  if (!user) {
+    res.status(404).json({ error: 'User not found' });
   } else {
-    res.status(403).json({ error: 'Access denied' }); // Forbidden
+    res.status(200).json(user);
   }
 });
 
@@ -150,13 +145,41 @@ app.get('/api/user-forms', (req, res) => {
 });
 
 // UserLists
-app.get('/api/user-lists', (req, res) => {
-  db.query('SELECT * FROM user_lists', (err, result) => {
+app.get('/api/user/:username/lists', ensureAuth, (req, res) => {
+  const username = req.params.username;
+  const user_id = req.user_id; // Get the user_id from the JWT payload
+
+  db.query('SELECT * FROM user_lists WHERE user_id = $1', [user_id], (err, result) => {
     if (err) {
       console.error('Error fetching user lists:', err);
       res.status(500).send(err);
     } else {
       res.status(200).json(result.rows);
+    }
+  });
+});
+
+// Create a user list
+app.post('/api/createUserList', ensureAuth, (req, res) => {
+  const { list_name, list_description } = req.body;
+  const user_id = req.user_id; // Get the user_id from the req object
+
+  if (!user_id) {
+    // Handle the case where the user_id is not available
+    console.error('User ID not available');
+    res.status(401).json({ error: 'User ID not available' });
+    return;
+  }
+
+  const query = 'INSERT INTO user_lists (user_id, list_name, list_description) VALUES ($1, $2, $3)';
+
+  db.query(query, [user_id, list_name, list_description], (err, result) => {
+    if (err) {
+      console.error('Error creating user list:', err);
+      res.status(500).json({ error: 'Error creating user list' });
+    } else {
+      console.log('User list created successfully');
+      res.status(201).json({ message: 'User list created successfully' });
     }
   });
 });

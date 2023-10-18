@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { secret } = require('./secrets');
 
-function ensureLoggedIn(req, res, next) {
+function ensureAuth(req, res, next) {
   // Extract the token from the Authorization header
   const authHeader = req.headers['authorization'];
 
@@ -24,16 +24,15 @@ function ensureLoggedIn(req, res, next) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    req.user = decoded;
-
-    // Check if the requested username matches the logged-in user's username
-    if (req.user.username === req.params.username) {
-      return next(); // User is authorized, proceed to the route
+    // Assuming the user ID is available in the JWT payload, you can extract it here
+    if (decoded.user_id && typeof decoded.user_id !== 'undefined') {
+      req.user_id = decoded.user_id; // Set the user_id in the request
     } else {
-      console.error('Username mismatch:', req.user.username, req.params.username);
-      return res.status(401).json({ error: 'Unauthorized' });
+      req.user_id = null; // Set it to null if not available
     }
+
+    next(); // Call next middleware
   });
 }
 
-module.exports = ensureLoggedIn;
+module.exports = ensureAuth;
