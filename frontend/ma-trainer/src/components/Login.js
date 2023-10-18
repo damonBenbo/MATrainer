@@ -18,12 +18,13 @@ function Login({ onLogin }) {
   
       if (response.status === 200) {
         const data = await response.json();
-        const { token, username } = data; // Get the username from the response
+        const { token, username } = data; // Get username from the response
   
         // Set both the token and username in local storage
         localStorage.setItem('token', token);
         localStorage.setItem('username', username);
-
+        console.log("Token", token);
+  
         onLogin();
   
         // Redirect to the home page

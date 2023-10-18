@@ -15,6 +15,7 @@ const UserPage = ({ match, userLoggedIn }) => {
     async function fetchData() {
       try {
         const token = localStorage.getItem('token');
+        console.log("Token", token);
         const storedUsername = localStorage.getItem('username'); // Use a different variable name
   
         if (!token) {

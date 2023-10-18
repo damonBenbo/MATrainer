@@ -17,6 +17,7 @@ function ensureLoggedIn(req, res, next) {
   }
 
   const token = tokenParts[1];
+  console.log("Token", token);
 
   jwt.verify(token, secret, (err, decoded) => {
     if (err) {
@@ -27,12 +28,11 @@ function ensureLoggedIn(req, res, next) {
     req.user = decoded;
     console.log('Decoded User:', req.user);
 
-    const requestedUsername = req.params.username;
-
-    if (req.user.username === requestedUsername) {
+    // No need to access username from route params, use it from the decoded token
+    if (req.user.username === req.params.username) {
       return next();
     } else {
-      console.error('Username mismatch:', req.user.username, requestedUsername);
+      console.error('Username mismatch:', req.user.username, req.params.username);
       return res.status(401).json({ error: 'Unauthorized' });
     }
   });

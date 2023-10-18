@@ -61,14 +61,18 @@ app.post('/api/login', async (req, res, next) => {
   try {
     const { username, password } = req.body;
     const result = await db.query(
-      `SELECT password FROM users WHERE username = $1`,
+      `SELECT id, password, username FROM users WHERE username = $1`,
       [username]
     );
     const user = result.rows[0];
 
     if (user) {
       if (await bcrypt.compare(password, user.password) === true) {
-        let token = jwt.sign({ username: user.username }, secret);
+        let token = jwt.sign({ 
+          user_id: user.id, // Include user_id
+          username: user.username // Include username
+        }, secret);
+        console.log("Token:", token);
         return res.json({ token, username });
       }
     }
