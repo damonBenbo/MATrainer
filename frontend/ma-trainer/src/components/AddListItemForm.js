@@ -29,7 +29,7 @@ const AddListItemForm = ({ listId }) => {
             endpoint = `/api/weapons`;
             break;
           case 'Forms':
-            endpoint = `/api/forms`;
+            endpoint = `/api/forms/names`;
             break;
           default:
             console.error('Invalid category');
@@ -96,8 +96,8 @@ const AddListItemForm = ({ listId }) => {
           <select value={selectedItem} onChange={handleItemChange}>
             <option value="">-- Select an item --</option>
             {availableItems.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.item_name}
+              <option key={item.id} value={item.name}>
+                {item.name}
               </option>
             ))}
           </select>

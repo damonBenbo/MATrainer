@@ -330,6 +330,18 @@ app.get('/api/forms', (req, res) => {
   });
 });
 
+// Forms names
+app.get('/api/forms/names', (req, res) => {
+  db.query('SELECT id, name FROM forms', (err, result) => {
+    if (err) {
+      console.error('Error fetching forms names:', err);
+      res.status(500).send(err);
+    } else {
+      res.status(200).json(result.rows);
+    }
+  });
+});
+
 // Adding forms
 app.post('/api/forms', (req, res) => {
   const {name, description, video_url, created_by} = req.body;
