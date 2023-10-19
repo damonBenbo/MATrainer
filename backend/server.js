@@ -184,6 +184,28 @@ app.post('/api/createUserList', ensureAuth, (req, res) => {
   });
 });
 
+// Route to retrieve list information by ID
+app.get('/api/list/:listId', ensureAuth, async (req, res) => {
+  const listId = req.params.listId; // Retrieve the list ID from the URL parameter
+
+  try {
+    // Query your PostgreSQL database to fetch the list details based on listId
+    const query = 'SELECT * FROM user_lists WHERE id = $1';
+    const result = await db.query(query, [listId]);
+
+    if (result.rows.length === 0) {
+      // Handle the case where the list with the specified ID is not found
+      return res.status(404).json({ error: 'List not found' });
+    }
+
+    const listData = result.rows[0]; // Assuming the query returns a single row
+    res.status(200).json(listData);
+  } catch (error) {
+    console.error('Error retrieving list:', error);
+    res.status(500).json({ error: 'Error retrieving list' });
+  }
+});
+
 // ListItems
 app.get('/api/list-items', (req, res) => {
   db.query('SELECT * FROM list_items', (err, result) => {

@@ -5,6 +5,7 @@ import Signup from './pages/Signup';
 import Login from './components/Login'; // Import the Login component
 import ToolbarComponent from './components/Toolbar';
 import UserPage from './pages/UserPage'; // Import UserPage
+import ListPage from './pages/ListPage';
 
 function App() {
   const [userLoggedIn, setUserLoggedIn] = useState(false);
@@ -26,6 +27,7 @@ function App() {
           path={`/user/:username`}
           component={UserPage}
         />
+        <Route path="/list/:listId" component={ListPage}/>
       </Switch>
     </Router>
   );

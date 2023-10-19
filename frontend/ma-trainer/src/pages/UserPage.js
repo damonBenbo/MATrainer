@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 
 const UserPage = ({ match }) => {
   const username = match.params.username;
@@ -100,20 +100,21 @@ const UserPage = ({ match }) => {
         <p>Welcome, {username}!</p>
       )}
 
-      {userLists.length > 0 ? (
-        <div>
-          <p>You have {userLists.length} user lists:</p>
-          <ul>
-            {userLists.map((list) => (
-              <li key={list.id}>
-                {list.list_name} - {list.list_description}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : (
-        <p>You don't have any user lists yet.</p>
-      )}
+{userLists.length > 0 ? (
+      <div>
+        <p>You have {userLists.length} user lists:</p>
+        <ul>
+          {userLists.map((list) => (
+            <li key={list.id}>
+              {/* Use Link to navigate to the list page */}
+              <Link to={`/list/${list.id}`}>{list.list_name}</Link> - {list.list_description}
+            </li>
+          ))}
+        </ul>
+      </div>
+    ) : (
+      <p>You don't have any user lists yet.</p>
+    )}
 
       <button onClick={handleAddUserList}>Create User List</button>
 
