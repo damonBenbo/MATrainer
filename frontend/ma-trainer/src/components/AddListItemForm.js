@@ -70,12 +70,46 @@ const AddListItemForm = ({ listId }) => {
 
   const handleAddItem = async (e) => {
     e.preventDefault();
-
-    // Send a request to add the selected item to list_items
-    // ...
-
-    // Clear the selected item after adding
-    setSelectedItem('');
+  
+    if (!selectedItem || !listId) {
+      console.error('Selected item or list ID is missing');
+      return;
+    }
+  
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('User not authenticated');
+        return;
+      }
+  
+      // Create a data object to send to the server
+      const data = {
+        listId: listId,
+        itemId: selectedItem,
+      };
+  
+      // Send a POST request to add the item to list_items
+      const response = await fetch('http://localhost:5000/api/list-items', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(data),
+      });
+  
+      if (response.status === 200) {
+        // Item added successfully, you can handle the success action here
+        console.log('Item added to the list');
+        // Optionally, you can clear the selected item
+        setSelectedItem('');
+      } else {
+        console.error('Failed to add item to the list');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   return (

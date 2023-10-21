@@ -207,7 +207,7 @@ app.get('/api/list/:listId', ensureAuth, async (req, res) => {
 });
 
 // ListItems
-app.get('/api/list-items', (req, res) => {
+app.get('/api/list-items', ensureAuth, (req, res) => {
   db.query('SELECT * FROM list_items', (err, result) => {
     if (err) {
       console.error('Error fetching list items:', err);
@@ -219,7 +219,7 @@ app.get('/api/list-items', (req, res) => {
 });
 
 // Adding ListItems
-app.post('/api/list-items', (req, res) => {
+app.post('/api/list-items', ensureAuth, (req, res) => {
   const { user_id, item_id, item_type } = req.body;
   const query = 'INSERT INTO listitems (user_id, item_id, item_type) VALUES ($1, $2, $3)';
 

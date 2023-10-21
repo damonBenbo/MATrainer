@@ -83,6 +83,12 @@ const UserPage = ({ match }) => {
       });
 
       if (response.status === 201) {
+        // Get the newly created list from the response data
+        const newList = response.data;
+
+        // Update the userLists state with the newly created list
+        setUserLists([...userLists, newList]);
+
         setHasUserList(true);
         setShowCreateListForm(false);
       } else {
