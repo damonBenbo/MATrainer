@@ -85,9 +85,9 @@ const createTablesQueries = [
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id),
     list_id INTEGER REFERENCES user_lists(id),
-    item_id INTEGER,
-    item_type VARCHAR(255),
-    position INTEGER
+    item_name text NOT NULL,
+    item_type VARCHAR(255) NOT NULL,
+    notes TEXT
   )`];
 
 // Execute the SQL statement to create all the tables

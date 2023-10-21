@@ -17,6 +17,7 @@ const UserPage = ({ match }) => {
     async function fetchData() {
       try {
         const token = localStorage.getItem('token');
+        const username = localStorage.getItem('username');
 
         if (!token) {
           history.push('/login');
@@ -113,7 +114,7 @@ const UserPage = ({ match }) => {
           {userLists.map((list) => (
             <li key={list.id}>
               {/* Use Link to navigate to the list page */}
-              <Link to={`/list/${list.id}`}>{list.list_name}</Link> - {list.list_description}
+              <Link to={`/${username}/list/${list.id}`}>{list.list_name}</Link> - {list.list_description}
             </li>
           ))}
         </ul>

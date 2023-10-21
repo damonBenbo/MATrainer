@@ -185,7 +185,7 @@ app.post('/api/createUserList', ensureAuth, (req, res) => {
 });
 
 // Route to retrieve list information by ID
-app.get('/api/list/:listId', ensureAuth, async (req, res) => {
+app.get('/api/:username/list/:listId', ensureAuth, async (req, res) => {
   const listId = req.params.listId; // Retrieve the list ID from the URL parameter
 
   try {
@@ -207,8 +207,12 @@ app.get('/api/list/:listId', ensureAuth, async (req, res) => {
 });
 
 // ListItems
-app.get('/api/list-items', ensureAuth, (req, res) => {
-  db.query('SELECT * FROM list_items', (err, result) => {
+app.get('/api/:username/list-items/:listId', ensureAuth, (req, res) => {
+  const { listId } = req.params;
+  const user_id = req.user_id;
+  
+  // Use username and listId in your database query to fetch the specific list items
+  db.query('SELECT * FROM list_items WHERE user_id = $1 AND list_id = $2', [user_id, listId], (err, result) => {
     if (err) {
       console.error('Error fetching list items:', err);
       res.status(500).send(err);
@@ -219,19 +223,31 @@ app.get('/api/list-items', ensureAuth, (req, res) => {
 });
 
 // Adding ListItems
-app.post('/api/list-items', ensureAuth, (req, res) => {
-  const { user_id, item_id, item_type } = req.body;
-  const query = 'INSERT INTO listitems (user_id, item_id, item_type) VALUES ($1, $2, $3)';
+app.post('/api/:username/list-items', ensureAuth, async (req, res) => {
 
-  db.query(query, [user_id, item_id, item_type], (err, result) => {
-    if (err) {
-      console.error('Error adding list item', err);
-      res.status(500).json({ error: 'Error adding list item'});
+  const user_id = req.user_id;
+  const { listId, item_name, item_type, notes } = req.body;
+
+  try {
+    // Extract user_id from the authentication token or session on the server
+    const user_id = req.user_id;
+
+    // Insert the new item into the list_items table with user_id
+    const query = 'INSERT INTO list_items (user_id, list_id, item_name, item_type, notes) VALUES ($1, $2, $3, $4, $5) RETURNING *';
+    const result = await db.query(query, [user_id, listId, item_name, item_type, notes]);
+
+    if (result.rows.length > 0) {
+      // Item added successfully, you can return the added item
+      const addedItem = result.rows[0];
+      res.status(200).json(addedItem);
     } else {
-      console.log('List item added successfully');
-      res.status(201).json({ message: 'Item added successfully'});
+      console.error('Failed to add item to the list');
+      res.status(500).json({ error: 'Failed to add item to the list' });
     }
-  });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Error adding item to the list' });
+  }
 });
 
 // Techniques

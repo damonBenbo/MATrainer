@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 
 const AddListItemForm = ({ listId }) => {
   const [selectedCategory, setSelectedCategory] = useState('Forms'); // Default category
   const [availableItems, setAvailableItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState('');
-
+  const [notes, setNotes] = useState(''); // Added state for notes
+  
+ 
   useEffect(() => {
     // Fetch available items for the selected category based on listId and selectedCategory
     async function fetchAvailableItems() {
@@ -68,6 +70,10 @@ const AddListItemForm = ({ listId }) => {
     setSelectedItem(e.target.value);
   };
 
+  const handleNotesChange = (e) => {
+    setNotes(e.target.value);
+  };
+
   const handleAddItem = async (e) => {
     e.preventDefault();
   
@@ -78,6 +84,7 @@ const AddListItemForm = ({ listId }) => {
   
     try {
       const token = localStorage.getItem('token');
+      const username = localStorage.getItem('username');
       if (!token) {
         console.error('User not authenticated');
         return;
@@ -86,11 +93,13 @@ const AddListItemForm = ({ listId }) => {
       // Create a data object to send to the server
       const data = {
         listId: listId,
-        itemId: selectedItem,
+        item_name: selectedItem,
+        item_type: selectedCategory,
+        notes: notes
       };
   
       // Send a POST request to add the item to list_items
-      const response = await fetch('http://localhost:5000/api/list-items', {
+      const response = await fetch(`http://localhost:5000/api/${username}/list-items`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -104,6 +113,7 @@ const AddListItemForm = ({ listId }) => {
         console.log('Item added to the list');
         // Optionally, you can clear the selected item
         setSelectedItem('');
+        setNotes('');
       } else {
         console.error('Failed to add item to the list');
       }
@@ -135,6 +145,16 @@ const AddListItemForm = ({ listId }) => {
               </option>
             ))}
           </select>
+        </div>
+        <div>
+          <label>Notes:</label>
+          <textarea
+            rows="4"
+            cols="50"
+            value={notes}
+            onChange={handleNotesChange}
+            placeholder="Add notes here"
+          />
         </div>
         <button type="submit">Add Item</button>
       </form>
