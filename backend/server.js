@@ -250,6 +250,35 @@ app.post('/api/:username/list-items', ensureAuth, async (req, res) => {
   }
 });
 
+app.put('/api/:username/list-items/:itemId', ensureAuth, (req, res) => {
+  const { username, itemId } = req.params;
+  const updatedItemData = req.body; // The updated item data sent in the request body
+
+  // Perform the update operation in your database
+  // You might use a database query or an ORM like Sequelize to update the item
+  // Ensure that you properly validate and sanitize the incoming data to prevent security issues.
+
+  // Example using Sequelize:
+  ListItems.update(updatedItemData, {
+    where: {
+      id: itemId,
+      user_id: username,
+    },
+  })
+    .then((result) => {
+      // Check if any rows were updated
+      if (result[0] === 1) {
+        res.status(200).json({ message: 'Item updated successfully' });
+      } else {
+        res.status(404).json({ message: 'Item not found' });
+      }
+    })
+    .catch((error) => {
+      console.error('Error updating item:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    });
+});
+
 // Techniques
 app.get('/api/techniques', (req, res) => {
   db.query('SELECT * FROM techniques', (err, result) => {

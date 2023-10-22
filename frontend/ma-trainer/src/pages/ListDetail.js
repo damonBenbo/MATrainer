@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import AddListItemForm from '../components/AddListItemForm';
+import EditListItem from '../components/EditListItem';
 
 const ListDetail = ({ match }) => {
   const listId = match.params.listId;
