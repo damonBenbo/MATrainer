@@ -13,6 +13,32 @@ const UserPage = ({ match }) => {
 
   const history = useHistory();
 
+  const fetchUserLists = async () => {
+    try {
+      const token = localStorage.getItem('token');
+
+      if (!token) {
+        console.error('User token not available');
+        return;
+      }
+
+      // Fetch the user's lists
+      const userListsResponse = await fetch(`http://localhost:5000/api/user/${username}/lists`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (userListsResponse.status === 200) {
+        const userListsData = await userListsResponse.json();
+        setUserLists(userListsData);
+      }
+    } catch (error) {
+      console.error('Error fetching user lists:', error);
+    }
+  };
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -92,6 +118,7 @@ const UserPage = ({ match }) => {
 
         setHasUserList(true);
         setShowCreateListForm(false);
+        fetchUserLists();
       } else {
         console.error('Failed to create user list');
       }

@@ -114,6 +114,7 @@ const AddListItemForm = ({ listId }) => {
         // Optionally, you can clear the selected item
         setSelectedItem('');
         setNotes('');
+        window.location.reload();
       } else {
         console.error('Failed to add item to the list');
       }

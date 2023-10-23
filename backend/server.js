@@ -250,33 +250,40 @@ app.post('/api/:username/list-items', ensureAuth, async (req, res) => {
   }
 });
 
-app.put('/api/:username/list-items/:itemId', ensureAuth, (req, res) => {
-  const { username, itemId } = req.params;
-  const updatedItemData = req.body; // The updated item data sent in the request body
+//Upate list-items
+app.put('/api/:userId/list-items/:itemId', ensureAuth, async (req, res) => {
+  const { itemId } = req.params;
+  const { item_name, item_type, notes } = req.body; // The updated item data sent in the request body
 
-  // Perform the update operation in your database
-  // You might use a database query or an ORM like Sequelize to update the item
-  // Ensure that you properly validate and sanitize the incoming data to prevent security issues.
+  try {
+    
+    const user_id = req.user_id;
 
-  // Example using Sequelize:
-  ListItems.update(updatedItemData, {
-    where: {
-      id: itemId,
-      user_id: username,
-    },
-  })
-    .then((result) => {
-      // Check if any rows were updated
-      if (result[0] === 1) {
-        res.status(200).json({ message: 'Item updated successfully' });
-      } else {
-        res.status(404).json({ message: 'Item not found' });
-      }
-    })
-    .catch((error) => {
-      console.error('Error updating item:', error);
-      res.status(500).json({ message: 'Internal server error' });
-    });
+    // Define the SQL query to update the item
+    const updateQuery = `
+      UPDATE list_items
+      SET item_name = $1,
+          item_type = $2,
+          notes = $3
+      WHERE id = $4 AND user_id = $5
+    `;
+
+    // Execute the update query with the provided parameters
+    const result = await db.query(updateQuery, [item_name, item_type, notes, itemId, user_id]);
+
+    if (result.rowCount === 1) {
+      // If one row was updated, commit the transaction
+      await db.query('COMMIT');
+      res.status(200).json({ message: 'Item updated successfully' });
+    } else {
+      // If no rows were updated, rollback the transaction
+      await db.query('ROLLBACK');
+      res.status(404).json({ message: 'Item not found' });
+    }
+  } catch (error) {
+    console.error('Error updating item:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 });
 
 // Techniques

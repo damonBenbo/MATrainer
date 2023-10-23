@@ -12,7 +12,7 @@ const EditListItem = ({ item, onSave, onCancel }) => {
   };
 
   const handleSave = () => {
-    onSave(editedItem);
+    onSave(editedItem); // Pass the editedItem back to the parent component for saving
   };
 
   return (
@@ -24,6 +24,16 @@ const EditListItem = ({ item, onSave, onCancel }) => {
           type="text"
           name="item_name"
           value={editedItem.item_name}
+          onChange={handleChange}
+        />
+      </label>
+      <br />
+      <label>
+        Item Type:
+        <input
+          type="text"
+          name="item_type"
+          value={editedItem.item_type}
           onChange={handleChange}
         />
       </label>
