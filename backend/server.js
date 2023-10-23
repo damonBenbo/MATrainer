@@ -184,6 +184,35 @@ app.post('/api/createUserList', ensureAuth, (req, res) => {
   });
 });
 
+//Delete a user list
+app.delete('/api/:username/lists/:listId', ensureAuth, async (req, res) => {
+  try {
+    const { listId } = req.params;
+    const user_id = req.user_id;
+
+    // Define the SQL query to delete the list
+    const deleteQuery = `
+      DELETE FROM user_lists
+      WHERE id = $1 AND user_id = $2
+    `;
+
+    // Execute the delete query with the provided parameters
+    const result = await db.query(deleteQuery, [listId, user_id]);
+
+    if (result.rowCount === 1) {
+      // If one row was deleted, it means the list was successfully removed
+      console.log('List removed!');
+      res.status(200).json({ message: 'List removed successfully' });
+    } else {
+      // If no rows were deleted, it means the list was not found
+      res.status(404).json({ message: 'List not found' });
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 // Route to retrieve list information by ID
 app.get('/api/:username/list/:listId', ensureAuth, async (req, res) => {
   const listId = req.params.listId; // Retrieve the list ID from the URL parameter
@@ -282,6 +311,34 @@ app.put('/api/:userId/list-items/:itemId', ensureAuth, async (req, res) => {
     }
   } catch (error) {
     console.error('Error updating item:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+// Define the route to delete an item from list-items
+app.delete('/api/:username/list-items/:itemId', ensureAuth, async (req, res) => {
+  try {
+    const { itemId } = req.params;
+    const user_id = req.user_id;
+
+    // Define the SQL query to delete the item
+    const deleteQuery = `
+      DELETE FROM list_items
+      WHERE id = $1 AND user_id = $2
+    `;
+
+    // Execute the delete query with the provided parameters
+    const result = await db.query(deleteQuery, [itemId, user_id]);
+
+    if (result.rowCount >= 1) {
+      // If one row was deleted, it means the item was successfully removed
+      res.status(200).json({ message: 'Item removed successfully' });
+    } else {
+      // If no rows were deleted, it means the item was not found
+      res.status(404).json({ message: 'Item not found' });
+    }
+  } catch (error) {
+    console.error('Error:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });

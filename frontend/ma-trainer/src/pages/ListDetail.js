@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import AddListItemForm from '../components/AddListItemForm';
 import EditListItem from '../components/EditListItem';
+import RemoveListItem from '../components/RemoveListItem';
 
 const ListDetail = ({ match }) => {
   const listId = match.params.listId;
@@ -127,11 +128,14 @@ const ListDetail = ({ match }) => {
     }
   };
 
+  const onRemove = () => {
+    fetchListItems();
+  }
+
   const handleCancelEdit = () => {
     // Clear the editingItemId state to exit editing mode
     setEditingItemId(null);
   };
-
 
 
   return (
@@ -163,6 +167,7 @@ const ListDetail = ({ match }) => {
                     {item.item_name} - {item.item_type}
                     {item.notes && <p>Notes: {item.notes}</p>}
                     <button onClick={() => handleEditItem(item.id)}>Edit</button>
+                    <RemoveListItem itemId={item.id} onRemove={onRemove} />
                   </>
                 )}
               </li>

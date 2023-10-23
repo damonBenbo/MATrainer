@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { useHistory, Link } from 'react-router-dom';
+import RemoveList from '../components/RemoveList';
 
 const UserPage = ({ match }) => {
   const username = match.params.username;
@@ -88,6 +89,10 @@ const UserPage = ({ match }) => {
     setShowCreateListForm(true);
   };
 
+  const handleListRemove = (removedListId) => {
+    setUserLists(userLists.filter((list) => list.id !== removedListId));
+  };
+
   const handleCreateListSubmit = async (e) => {
     e.preventDefault();
 
@@ -140,8 +145,8 @@ const UserPage = ({ match }) => {
         <ul>
           {userLists.map((list) => (
             <li key={list.id}>
-              {/* Use Link to navigate to the list page */}
               <Link to={`/${username}/list/${list.id}`}>{list.list_name}</Link> - {list.list_description}
+              <RemoveList listId={list.id} onRemove={handleListRemove} />
             </li>
           ))}
         </ul>

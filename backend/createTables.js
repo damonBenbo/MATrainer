@@ -76,7 +76,7 @@ const createTablesQueries = [
 
   `CREATE TABLE IF NOT EXISTS user_lists (
     id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES users(id),
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     list_name text NOT NULL,
     list_description text NOT NULL
   )`,
@@ -84,7 +84,7 @@ const createTablesQueries = [
   `CREATE TABLE IF NOT EXISTS list_items (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id),
-    list_id INTEGER REFERENCES user_lists(id),
+    list_id INTEGER REFERENCES user_lists(id) ON DELETE CASCADE,
     item_name text NOT NULL,
     item_type VARCHAR(255) NOT NULL,
     notes TEXT

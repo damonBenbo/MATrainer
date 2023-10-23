@@ -23,9 +23,9 @@ function Login({ onLogin }) {
         // Set both the token and username in local storage
         localStorage.setItem('token', token);
         localStorage.setItem('username', username);
-        console.log("Token", token);
   
-        onLogin();
+        // Call the onLogin callback with the token
+        onLogin(token);
   
         // Redirect to the home page
         history.push('/');
