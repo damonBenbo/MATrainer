@@ -22,6 +22,7 @@ const ToolbarComponent = ({ userLoggedIn }) => {
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           MATrainer
         </Typography>
+        {/* Add your SearchComponent here */}
         <Button color="inherit" component={Link} to="/">
           Home
         </Button>

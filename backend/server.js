@@ -467,6 +467,48 @@ app.post('/api/forms', (req, res) => {
   });
 });
 
+// Create a route to handle search requests
+app.get('/api/search/:searchTerm', async (req, res) => {
+  const searchTerm = req.params.searchTerm || '';
+
+  try {
+    // Use a SQL query to find relevant items in multiple tables
+    const query = `
+      SELECT name, description
+      FROM techniques
+      WHERE
+        LOWER(name) LIKE $1 OR
+        LOWER(description) LIKE $1
+      UNION
+      SELECT name, description
+      FROM patterns
+      WHERE
+        LOWER(name) LIKE $1 OR
+        LOWER(description) LIKE $1
+      UNION
+      SELECT name, description
+      FROM forms
+      WHERE
+        LOWER(name) LIKE $1 OR
+        LOWER(description) LIKE $1
+      UNION
+      SELECT name, description
+      FROM weapons
+      WHERE
+        LOWER(name) LIKE $1 OR
+        LOWER(description) LIKE $1
+    `;
+    const values = [`%${searchTerm.toLowerCase()}%`];
+
+    const result = await db.query(query, values);
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error fetching relevant items:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

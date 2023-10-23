@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const RemoveList = ({ listId, onRemove }) => {
   const [isRemoving, setIsRemoving] = useState(false);
@@ -44,11 +46,20 @@ const RemoveList = ({ listId, onRemove }) => {
   return (
     <div>
       {isRemoving ? (
-        <p>Removing...</p>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <CircularProgress size={20} style={{ marginRight: '10px' }} />
+          <span>Removing...</span>
+        </div>
       ) : (
         <>
-          <button onClick={handleRemove}>Remove List</button>
-          {error && <p>Error: {error}</p>}
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={handleRemove}
+          >
+            Remove List
+          </Button>
+          {error && <p style={{ color: 'red' }}>Error: {error}</p>}
         </>
       )}
     </div>

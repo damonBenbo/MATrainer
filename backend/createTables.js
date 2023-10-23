@@ -46,34 +46,6 @@ const createTablesQueries = [
     created_by INTEGER REFERENCES users(id)
   )`,
 
-  `CREATE TABLE IF NOT EXISTS user_patterns (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES users(id),
-    pattern_id INTEGER REFERENCES patterns(id),
-    user_notes VARCHAR(255)
-  )`,
-
-  `CREATE TABLE IF NOT EXISTS user_techniques (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES users(id),
-    techniques_id INTEGER REFERENCES techniques(id),
-    user_notes VARCHAR(255)
-  )`,
-
-  `CREATE TABLE IF NOT EXISTS user_weapons (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES users(id),
-    weapon_id INTEGER REFERENCES weapons(id),
-    user_notes VARCHAR(255)
-  )`,
-
-  `CREATE TABLE IF NOT EXISTS user_forms (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES users(id),
-    form_id INTEGER REFERENCES forms(id),
-    user_notes VARCHAR(255)
-  )`,
-
   `CREATE TABLE IF NOT EXISTS user_lists (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,

@@ -2,6 +2,11 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import RemoveList from '../components/RemoveList';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Grid from '@mui/material/Grid';
 
 const UserPage = ({ match }) => {
   const username = match.params.username;
@@ -133,54 +138,83 @@ const UserPage = ({ match }) => {
   };
 
   return (
-    <div>
-      <h2>User Profile</h2>
-      {userData && (
-        <p>Welcome, {username}!</p>
-      )}
+    <Grid container justifyContent="center" alignItems="flex-start" style={{ marginTop: '1rem' }}>
+      <Grid item xs={12} sm={8} md={6}>
+        <Paper elevation={3} style={{ padding: '20px' }}>
+          <Typography variant="h4" align="center" gutterBottom>
+            User Profile
+          </Typography>
+          {userData && (
+            <Typography variant="h6" align="center">Welcome, {username}!</Typography>
+          )}
 
-{userLists.length > 0 ? (
-      <div>
-        <p>You have {userLists.length} user lists:</p>
-        <ul>
-          {userLists.map((list) => (
-            <li key={list.id}>
-              <Link to={`/${username}/list/${list.id}`}>{list.list_name}</Link> - {list.list_description}
-              <RemoveList listId={list.id} onRemove={handleListRemove} />
-            </li>
-          ))}
-        </ul>
-      </div>
-    ) : (
-      <p>You don't have any user lists yet.</p>
-    )}
+          {userLists.length > 0 ? (
+            <div>
+              <Typography variant="subtitle1" align="center">
+                You have {userLists.length} user lists:
+              </Typography>
+              <ul>
+                {userLists.map((list) => (
+                  <li key={list.id} style={{ marginBottom: '1rem' }}>
+                    <Link to={`/${username}/list/${list.id}`}>
+                      {list.list_name}
+                    </Link>{' '}
+                    - {list.list_description}
+                    <RemoveList listId={list.id} onRemove={handleListRemove} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : (
+            <Typography variant="body1" align="center">
+              You don't have any user lists yet.
+            </Typography>
+          )}
 
-      <button onClick={handleAddUserList}>Create User List</button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleAddUserList}
+            style={{ marginTop: '10px', display: 'block', margin: '0 auto' }}
+          >
+            Create User List
+          </Button>
 
-      {showCreateListForm && (
-        <form onSubmit={handleCreateListSubmit}>
-          <div>
-            <label>List Name:</label>
-            <input
-              type="text"
-              value={listName}
-              onChange={(e) => setListName(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label>List Description:</label>
-            <input
-              type="text"
-              value={listDescription}
-              onChange={(e) => setListDescription(e.target.value)}
-              required
-            />
-          </div>
-          <button type="submit">Create List</button>
-        </form>
-      )}
-    </div>
+          {showCreateListForm && (
+            <form onSubmit={handleCreateListSubmit}>
+              <div>
+                <TextField
+                  label="List Name"
+                  type="text"
+                  value={listName}
+                  onChange={(e) => setListName(e.target.value)}
+                  required
+                  fullWidth
+                />
+              </div>
+              <div style={{ marginTop: '1rem' }}>
+                <TextField
+                  label="List Description"
+                  type="text"
+                  value={listDescription}
+                  onChange={(e) => setListDescription(e.target.value)}
+                  required
+                  fullWidth
+                />
+              </div>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                style={{ marginTop: '10px', display: 'block', margin: '0 auto' }}
+              >
+                Create List
+              </Button>
+            </form>
+          )}
+        </Paper>
+      </Grid>
+    </Grid>
   );
 };
 

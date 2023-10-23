@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import TextareaAutosize from '@mui/material/TextareaAutosize';
 
 const EditListItem = ({ item, onSave, onCancel }) => {
   const [editedItem, setEditedItem] = useState(item);
@@ -16,39 +19,43 @@ const EditListItem = ({ item, onSave, onCancel }) => {
   };
 
   return (
-    <div>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
       <h3>Edit Item</h3>
-      <label>
-        Item Name:
-        <input
-          type="text"
-          name="item_name"
-          value={editedItem.item_name}
-          onChange={handleChange}
-        />
-      </label>
+      <TextField
+        label="Item Name"
+        type="text"
+        name="item_name"
+        value={editedItem.item_name}
+        onChange={handleChange}
+        fullWidth
+      />
       <br />
-      <label>
-        Item Type:
-        <input
-          type="text"
-          name="item_type"
-          value={editedItem.item_type}
-          onChange={handleChange}
-        />
-      </label>
+      <TextField
+        label="Item Type"
+        type="text"
+        name="item_type"
+        value={editedItem.item_type}
+        onChange={handleChange}
+        fullWidth
+      />
       <br />
       <label>
         Notes:
-        <textarea
+        <TextareaAutosize
+          rowsMin={4}
           name="notes"
           value={editedItem.notes}
           onChange={handleChange}
-        ></textarea>
+          style={{ width: '100%', minHeight: '100px' }}
+        ></TextareaAutosize>
       </label>
       <br />
-      <button onClick={handleSave}>Save</button>
-      <button onClick={onCancel}>Cancel</button>
+      <Button variant="contained" color="primary" onClick={handleSave}>
+        Save
+      </Button>
+      <Button variant="contained" color="secondary" onClick={onCancel}>
+        Cancel
+      </Button>
     </div>
   );
 };

@@ -2,6 +2,14 @@ import React, { useState, useEffect } from 'react';
 import AddListItemForm from '../components/AddListItemForm';
 import EditListItem from '../components/EditListItem';
 import RemoveListItem from '../components/RemoveListItem';
+import Button from '@mui/material/Button';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import Divider from '@mui/material/Divider';
+
 
 const ListDetail = ({ match }) => {
   const listId = match.params.listId;
@@ -140,49 +148,84 @@ const ListDetail = ({ match }) => {
 
   return (
     <div>
-      <h2>List Details</h2>
+      <Typography variant="h4" gutterBottom align="center">
+        List Details
+      </Typography>
       {listData ? (
-        <div>
-          <p>List Name: {listData.list_name}</p>
-          <p>List Description: {listData.list_description}</p>
-        </div>
+        <Paper elevation={3} style={{ padding: '20px', margin: '10px 0' }}>
+          <Typography variant="h6" style={{ marginBottom: '10px' }} align="center">
+            List Name: {listData.list_name}
+          </Typography>
+          <Typography variant="body1" align="center">
+            List Description: {listData.list_description}
+          </Typography>
+        </Paper>
       ) : (
         <p>Loading list data...</p>
       )}
 
       {listItems.length > 0 ? (
         <div>
-          <h3>List Items</h3>
-          <ul>
-            {listItems.map((item) => (
-              <li key={item.id}>
-                {editingItemId === item.id ? ( // Check if editing mode is active for this item
-                  <EditListItem
-                    item={item}
-                    onSave={handleSaveEditedItem}
-                    onCancel={handleCancelEdit}
-                  />
-                ) : (
-                  <>
-                    {item.item_name} - {item.item_type}
-                    {item.notes && <p>Notes: {item.notes}</p>}
-                    <button onClick={() => handleEditItem(item.id)}>Edit</button>
-                    <RemoveListItem itemId={item.id} onRemove={onRemove} />
-                  </>
-                )}
-              </li>
-            ))}
-          </ul>
+          <Typography variant="h5" style={{ margin: '20px 0' }} align="center">
+            List Items
+          </Typography>
+          <List>
+          {listItems.map((item) => (
+  <div key={item.id} style={{ display: 'flex', alignItems: 'center'}}>
+    <ListItem style={{ marginBottom: '10px', display: 'flex', alignItems: 'center' }}>
+      {editingItemId === item.id ? (
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <EditListItem
+            item={item}
+            onSave={handleSaveEditedItem}
+            onCancel={handleCancelEdit}
+          />
+        </div>
+      ) : (
+        <>
+          <ListItemText style={{ marginLeft: '10px', flex: '1' }}
+            primary={item.item_name}
+            secondary={item.item_type}
+          />
+          {item.notes && (
+            <Typography variant="body2" style={{ marginBottom: '5px' }} align="center">
+              Notes: {item.notes}
+            </Typography>
+          )}
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => handleEditItem(item.id)}
+            style={{ marginRight: '10px' }}
+          >
+            Edit
+          </Button>
+          <RemoveListItem itemId={item.id} onRemove={onRemove} />
+        </>
+      )}
+    </ListItem>
+    {listItems.indexOf(item) < listItems.length - 1 && (
+      <Divider />
+    )}
+  </div>
+))}
+          </List>
         </div>
       ) : (
         <p>No list items found.</p>
       )}
-      <button onClick={handleToggleAddItemForm}>
-        {showAddItemForm ? 'Hide Form' : 'Show Form'}
-      </button>
+      <Button
+        variant="contained"
+        color={showAddItemForm ? 'secondary' : 'primary'}
+        onClick={handleToggleAddItemForm}
+        style={{ marginTop: '20px', display: 'block', margin: '0 auto' }}
+      >
+        {showAddItemForm ? 'Hide Form' : 'Add Items'}
+      </Button>
       {showAddItemForm && <AddListItemForm listId={listId} />}
     </div>
   );
 };
+
 
 export default ListDetail;

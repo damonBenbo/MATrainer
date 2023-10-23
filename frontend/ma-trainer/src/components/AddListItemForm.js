@@ -1,12 +1,19 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import TextField from '@mui/material/TextField';
+import TextareaAutosize from '@mui/material/TextareaAutosize';
+import Button from '@mui/material/Button';
 
 const AddListItemForm = ({ listId }) => {
   const [selectedCategory, setSelectedCategory] = useState('Forms'); // Default category
   const [availableItems, setAvailableItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState('');
   const [notes, setNotes] = useState(''); // Added state for notes
-  
- 
+
   useEffect(() => {
     // Fetch available items for the selected category based on listId and selectedCategory
     async function fetchAvailableItems() {
@@ -76,12 +83,12 @@ const AddListItemForm = ({ listId }) => {
 
   const handleAddItem = async (e) => {
     e.preventDefault();
-  
+
     if (!selectedItem || !listId) {
       console.error('Selected item or list ID is missing');
       return;
     }
-  
+
     try {
       const token = localStorage.getItem('token');
       const username = localStorage.getItem('username');
@@ -89,15 +96,15 @@ const AddListItemForm = ({ listId }) => {
         console.error('User not authenticated');
         return;
       }
-  
+
       // Create a data object to send to the server
       const data = {
         listId: listId,
         item_name: selectedItem,
         item_type: selectedCategory,
-        notes: notes
+        notes: notes,
       };
-  
+
       // Send a POST request to add the item to list_items
       const response = await fetch(`http://localhost:5000/api/${username}/list-items`, {
         method: 'POST',
@@ -107,7 +114,7 @@ const AddListItemForm = ({ listId }) => {
         },
         body: JSON.stringify(data),
       });
-  
+
       if (response.status === 200) {
         // Item added successfully, you can handle the success action here
         console.log('Item added to the list');
@@ -124,42 +131,43 @@ const AddListItemForm = ({ listId }) => {
   };
 
   return (
-    <div>
-      <h3>Add Item to List</h3>
-      <form onSubmit={handleAddItem}>
-        <div>
+    <Paper elevation={3} style={{ textAlign: 'center', padding: '20px' }}>
+      <Typography variant="h5" style={{ marginBottom: '20px' }}>Add Item to List</Typography>
+      <form onSubmit={handleAddItem} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <FormControl style={{ marginBottom: '10px' }}>
           <label>Select Category:</label>
-          <select value={selectedCategory} onChange={handleCategoryChange}>
-            <option value="Forms">Forms</option>
-            <option value="Patterns">Patterns</option>
-            <option value="Weapons">Weapons</option>
-            <option value="Techniques">Techniques</option>
-          </select>
-        </div>
-        <div>
+          <Select value={selectedCategory} onChange={handleCategoryChange}>
+            <MenuItem value="Forms">Forms</MenuItem>
+            <MenuItem value="Patterns">Patterns</MenuItem>
+            <MenuItem value="Weapons">Weapons</MenuItem>
+            <MenuItem value="Techniques">Techniques</MenuItem>
+          </Select>
+        </FormControl>
+        <FormControl style={{ marginBottom: '10px' }}>
           <label>Select Item:</label>
-          <select value={selectedItem} onChange={handleItemChange}>
-            <option value="">-- Select an item --</option>
+          <Select value={selectedItem} onChange={handleItemChange}>
+            <MenuItem value="">-- Select an item --</MenuItem>
             {availableItems.map((item) => (
-              <option key={item.id} value={item.name}>
+              <MenuItem key={item.id} value={item.name}>
                 {item.name}
-              </option>
+              </MenuItem>
             ))}
-          </select>
-        </div>
-        <div>
+          </Select>
+        </FormControl>
+        <FormControl style={{ marginBottom: '10px' }}>
           <label>Notes:</label>
-          <textarea
-            rows="4"
-            cols="50"
+          <TextareaAutosize
+            rowsMin={4}
             value={notes}
             onChange={handleNotesChange}
             placeholder="Add notes here"
           />
-        </div>
-        <button type="submit">Add Item</button>
+        </FormControl>
+        <Button type="submit" variant="contained" color="primary">
+          Add Item
+        </Button>
       </form>
-    </div>
+    </Paper>
   );
 };
 
