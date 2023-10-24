@@ -42,7 +42,7 @@ const EditListItem = ({ item, onSave, onCancel }) => {
       <label>
         Notes:
         <TextareaAutosize
-          rowsMin={4}
+          rowsmin={4}
           name="notes"
           value={editedItem.notes}
           onChange={handleChange}

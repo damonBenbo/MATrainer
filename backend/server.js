@@ -96,54 +96,6 @@ app.get('/api/user/:username', ensureLoggedIn, (req, res) => {
   }
 });
 
-// UserTechniques
-app.get('/api/user-techniques', (req, res) => {
-  db.query('SELECT * FROM user_techniques', (err, result) => {
-    if (err) {
-      console.error('Error fetching user techniques:', err);
-      res.status(500).send(err);
-    } else {
-      res.status(200).json(result.rows);
-    }
-  });
-});
-
-// UserPatterns
-app.get('/api/user-patterns', (req, res) => {
-  db.query('SELECT * FROM user_patterns', (err, result) => {
-    if (err) {
-      console.error('Error fetching user patterns:', err);
-      res.status(500).send(err);
-    } else {
-      res.status(200).json(result.rows);
-    }
-  });
-});
-
-// UserWeapons
-app.get('/api/user-weapons', (req, res) => {
-  db.query('SELECT * FROM user_weapons', (err, result) => {
-    if (err) {
-      console.error('Error fetching user weapons:', err);
-      res.status(500).send(err);
-    } else {
-      res.status(200).json(result.rows);
-    }
-  });
-});
-
-// UserForms
-app.get('/api/user-forms', (req, res) => {
-  db.query('SELECT * FROM user_forms', (err, result) => {
-    if (err) {
-      console.error('Error fetching user forms:', err);
-      res.status(500).send(err);
-    } else {
-      res.status(200).json(result.rows);
-    }
-  });
-});
-
 // UserLists
 app.get('/api/user/:username/lists', ensureAuth, (req, res) => {
   const username = req.params.username;
@@ -413,10 +365,10 @@ app.get('/api/weapons', (req, res) => {
 
 // Adding weapons
 app.post('/api/weapons', (req, res) => {
-  const {name, description, video_url, created_by} = req.body;
-  const query = 'INSERT INTO weapons (name, description, video_url, created_by) VALUES ($1, $2, $3, $4)';
+  const {name, description, img, created_by} = req.body;
+  const query = 'INSERT INTO weapons (name, description, img, created_by) VALUES ($1, $2, $3, $4)';
 
-  db.query(query, [name, description, video_url, created_by], (err, result) => {
+  db.query(query, [name, description, img, created_by], (err, result) => {
     if (err) {
       console.error('Error adding weapon', err);
       res.status(500).json({ error: 'Error adding weapon'});

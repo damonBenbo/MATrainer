@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
+import AddItemComponent from '../components/AddItemComponent';
 
 const UserPage = ({ match }) => {
   const username = match.params.username;
@@ -16,6 +17,7 @@ const UserPage = ({ match }) => {
   const [listDescription, setListDescription] = useState('');
   const [userData, setUserData] = useState(null);
   const [userLists, setUserLists] = useState([]);
+  const [showAddItemForm, setShowAddItemForm] = useState(false);
 
   const history = useHistory();
 
@@ -92,6 +94,10 @@ const UserPage = ({ match }) => {
 
   const handleAddUserList = () => {
     setShowCreateListForm(true);
+  };
+  
+  const handleToggleAddItemForm = () => {
+    setShowAddItemForm(!showAddItemForm);
   };
 
   const handleListRemove = (removedListId) => {
@@ -180,6 +186,15 @@ const UserPage = ({ match }) => {
             Create User List
           </Button>
 
+          <Button
+            variant="contained"
+            color={showAddItemForm ? 'secondary' : 'primary'}
+            onClick={handleToggleAddItemForm}
+            style={{ marginTop: '10px', display: 'block', margin: '0 auto' }}
+          >
+            {showAddItemForm ? 'Hide Add Item Form' : 'Add Item'}
+          </Button>
+
           {showCreateListForm && (
             <form onSubmit={handleCreateListSubmit}>
               <div>
@@ -212,6 +227,8 @@ const UserPage = ({ match }) => {
               </Button>
             </form>
           )}
+
+          {showAddItemForm && <AddItemComponent itemType="item" />}
         </Paper>
       </Grid>
     </Grid>
