@@ -3,7 +3,7 @@ import axios from 'axios';
 import './Signup.css';
 import { withRouter } from 'react-router-dom'; // Import withRouter
 
-function Signup({ history }) { // Pass history as a prop
+function Signup({ history }) {
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -33,9 +33,20 @@ function Signup({ history }) { // Pass history as a prop
       const response = await axios.post('http://localhost:5000/api/sign-up', registrationData);
 
       if (response.status === 201) {
-        // Successful registration and login
-        // Redirect to the home page
-        history.push('/'); // Redirect to the home page
+        // Successful registration, now let's log in the user
+        const loginResponse = await axios.post('http://localhost:5000/api/login', {
+          username: formData.username,
+          password: formData.password,
+        });
+
+        if (loginResponse.status === 200) {
+          // Successful login
+          // You can store the user's token or other relevant information in local storage or state
+          localStorage.setItem('token', loginResponse.data.token);
+          localStorage.setItem('username', formData.username);
+          // Redirect to the home page or wherever you want the user to go after login
+          history.push('/login'); // Redirect to login page
+        }
       }
     } catch (err) {
       if (err.response && err.response.data.error) {
