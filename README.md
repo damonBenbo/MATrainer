@@ -8,14 +8,21 @@ MATrainer is meant to help a user train or discover new things in the Martial Ar
 
 ## Wireframes
 
-- Coming soon!
+- ![image](https://github.com/damonBenbo/MATrainer/assets/115174854/60c71201-1802-414e-8a7e-517276cef2bb)
+- ![image](https://github.com/damonBenbo/MATrainer/assets/115174854/07e56bee-297e-4b24-b8e8-efcd433a6e29)
+- ![image](https://github.com/damonBenbo/MATrainer/assets/115174854/ae8a82b5-21ad-4de4-a661-f80bcb30fcb5)
+- ![image](https://github.com/damonBenbo/MATrainer/assets/115174854/1e3f5ef4-8780-4d01-9dc8-dcd477cc5a14)
+
+
+
+
 
 ## User Stories
 
-- As a Pokemon fan, I want to be able to search for a specific Pokemon and view its details.
-- As a user, I want to create an account and save my favorite Pokemon to a personalized Pokedex.
-- As a user, I want to view the types and abilities of a specific Pokemon.
-- As a user, I want to see a visual representation of each Pokemon, such as images or sprites.
+- As a Marital Arts fan, I wanted something that I could use to help practice.
+- As a user, I want to create an account and save my subjects I want to work on or explore new ones.
+- As a user, I want to be able to customize my experience and add notes.
+- As a user, I want to have something that is easy to reference and update.
 
 ## Setup
 
@@ -42,15 +49,16 @@ MATrainer is meant to help a user train or discover new things in the Martial Ar
 - Bcrypt: Salt and Hashing Encryption for account security
 - React: 
 - Express:
-- CSS: Styling the user interface
+- MaterialUI:
+- Node:
 
 ## Models
-
-(In progress)
 
 The database schema I'll be aiming to use is leveraging the PostgreSQL that it currently uses. The schema is going to look something like this:
 
 ![MATrainer_Schema](https://github.com/damonBenbo/MATrainer/assets/115174854/f5d5eabe-f61e-4aea-b120-1ea03381122d)
+
+I allow users to add items to the database for all users to use, or if users want they can further edit and add notes to their personally made list.
 
 ## Server Routes Table
 
@@ -61,7 +69,6 @@ Will add pictures or video examples soon!
 ## Project Link
 
 [Link to repository](https://github.com/damonBenbo/MATrainer)
-[Link to live example](null)
 
 ## Future Work
 
@@ -69,6 +76,7 @@ Will add pictures or video examples soon!
 - Reminders, to practice desired subjects
 - Create altered versions of techniques/etc for personal practice.
 - Enhance the user interface with more interactive elements and animations.
+- Add a search bar
 
 ## Resources
 
