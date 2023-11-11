@@ -5,7 +5,5 @@ npm start
 
 #Navigate to backend and start
 
-cd ..
-cd ..
-cd backend
+cd ../../backend
 npm start
