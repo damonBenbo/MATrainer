@@ -1,0 +1,7 @@
+{
+"scripts": {
+    "start-backend": "node backend/server.js",
+    "start-frontend": "npm start --prefix frontend/ma-trainer",
+    "start": "npm run start-backend & npm run start-frontend"
+  }
+}
