@@ -1,5 +1,5 @@
 const { Client } = require('pg');
-const {DATABASE_URL} = require('/etc/secrets/secrets');
+const {DATABASE_URL} = require('./secrets');
 
 const client = new Client(DATABASE_URL);
 client.connect(function(err) {
@@ -12,7 +12,6 @@ client.connect(function(err) {
     }
     console.log(result.rows[0].theTime);
     // >> output: 2018-08-23T14:02:57.117Z
-    client.end();
   });
 });
 

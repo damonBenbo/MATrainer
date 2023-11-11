@@ -14,7 +14,7 @@ const port = process.env.PORT || 5000;
 app.use(cors({ origin: 'https://matrainer.onrender.com' })); // Adjust the origin as needed
 app.use(bodyParser.json());
 
-db.connect();
+// db.connect();
 
 // Function to get a user by username
 async function getUserByUsername(username) {
