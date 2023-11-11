@@ -1,7 +1,7 @@
 const { Client } = require('pg');
 const {DATABASE_URL} = require('../secrets');
 
-const client = new Client(process.env(DATABASE_URL));
+const client = new Client(DATABASE_URL);
 client.connect(function(err) {
   if(err) {
     return console.error('could not connect to postgres', err);
