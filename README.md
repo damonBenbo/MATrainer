@@ -51,6 +51,7 @@ MATrainer is meant to help a user train or discover new things in the Martial Ar
 - Express:
 - MaterialUI:
 - Node:
+- PostgeSQL:
 
 ## Models
 
