@@ -1,4 +1,5 @@
 const { Client } = require('pg');
+const {DATABASE_URL} = require('./secrets');
 
 const client = new Client(process.env(DATABASE_URL));
 client.connect(function(err) {
