@@ -1,12 +1,18 @@
 const { Client } = require('pg');
-const {password} = require('./secrets');
 
-const client = new Client({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'MATrainer',
-  password: password, // Replace with your actual password
-  port: 5432,
+const client = new Client(DATABASE_URL);
+client.connect(function(err) {
+  if(err) {
+    return console.error('could not connect to postgres', err);
+  }
+  client.query('SELECT NOW() AS "theTime"', function(err, result) {
+    if(err) {
+      return console.error('error running query', err);
+    }
+    console.log(result.rows[0].theTime);
+    // >> output: 2018-08-23T14:02:57.117Z
+    client.end();
+  });
 });
 
 module.exports = client;
