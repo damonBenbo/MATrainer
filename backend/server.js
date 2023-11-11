@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const db = require('./db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const {secret} = require('./secrets');
+const {secret} = require('/etc/secrets/secrets');
 const ensureLoggedIn = require('./ensureLoggedIn');
 const ensureAuth = require('./ensureAuth');
 
