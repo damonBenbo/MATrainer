@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { secret } = require('./secrets');
+const { secret } = require('/etc/secrets/secrets');
 
 function ensureAuth(req, res, next) {
   // Extract the token from the Authorization header
