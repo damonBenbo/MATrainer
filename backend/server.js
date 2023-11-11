@@ -9,7 +9,7 @@ const ensureLoggedIn = require('./ensureLoggedIn');
 const ensureAuth = require('./ensureAuth');
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = 5000;
 
 app.use(cors({ origin: 'https://matrainer.onrender.com' })); // Adjust the origin as needed
 app.use(bodyParser.json());
