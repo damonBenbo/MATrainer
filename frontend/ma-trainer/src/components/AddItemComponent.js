@@ -12,7 +12,7 @@ const AddItemComponent = () => {
       // Convert category to lowercase
       const lowercaseCategory = category.toLowerCase();
 
-      const response = await axios.post(`http://localhost:5000/api/${lowercaseCategory}s`, {
+      const response = await axios.post(`https://matrainer.onrender.com/api/${lowercaseCategory}s`, {
         name: itemName,
         description: itemDescription,
       });

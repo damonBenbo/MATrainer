@@ -17,7 +17,7 @@ const ListPage = ({ match }) => {
         }
 
         // Fetch the list data using the listId parameter
-        const response = await fetch(`http://localhost:5000/api/:username/list/${listId}`, {
+        const response = await fetch(`https://matrainer.onrender.com/api/:username/list/${listId}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,

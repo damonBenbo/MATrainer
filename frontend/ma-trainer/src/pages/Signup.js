@@ -30,11 +30,11 @@ function Signup({ history }) {
     try {
       // Send the registration request without confirmPassword
       const { confirmPassword, ...registrationData } = formData;
-      const response = await axios.post('http://localhost:5000/api/sign-up', registrationData);
+      const response = await axios.post('https://matrainer.onrender.com/api/sign-up', registrationData);
 
       if (response.status === 201) {
         // Successful registration, now let's log in the user
-        const loginResponse = await axios.post('http://localhost:5000/api/login', {
+        const loginResponse = await axios.post('https://matrainer.onrender.com/api/login', {
           username: formData.username,
           password: formData.password,
         });

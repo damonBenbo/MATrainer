@@ -31,7 +31,7 @@ const UserPage = ({ match }) => {
       }
 
       // Fetch the user's lists
-      const userListsResponse = await fetch(`http://localhost:5000/api/user/${username}/lists`, {
+      const userListsResponse = await fetch(`https://matrainer.onrender.com/api/user/${username}/lists`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -57,7 +57,7 @@ const UserPage = ({ match }) => {
           history.push('/login');
         } else {
           // Fetch user data
-          const userDataResponse = await fetch(`http://localhost:5000/api/user/${username}`, {
+          const userDataResponse = await fetch(`https://matrainer.onrender.com/api/user/${username}`, {
             method: 'GET',
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -72,7 +72,7 @@ const UserPage = ({ match }) => {
           }
 
           // Fetch the user's lists
-          const userListsResponse = await fetch(`http://localhost:5000/api/user/${username}/lists`, {
+          const userListsResponse = await fetch(`https://matrainer.onrender.com/api/user/${username}/lists`, {
             method: 'GET',
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -95,7 +95,7 @@ const UserPage = ({ match }) => {
   const handleAddUserList = () => {
     setShowCreateListForm(true);
   };
-  
+
   const handleToggleAddItemForm = () => {
     setShowAddItemForm(!showAddItemForm);
   };
@@ -118,7 +118,7 @@ const UserPage = ({ match }) => {
     };
 
     try {
-      const response = await axios.post('http://localhost:5000/api/createUserList', data, {
+      const response = await axios.post('https://matrainer.onrender.com/api/createUserList', data, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`,

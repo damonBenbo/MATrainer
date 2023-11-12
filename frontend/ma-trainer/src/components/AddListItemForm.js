@@ -46,7 +46,7 @@ const AddListItemForm = ({ listId }) => {
         }
 
         // Fetch available items based on the selected category and listId
-        const response = await fetch(`http://localhost:5000${endpoint}`, {
+        const response = await fetch(`https://matrainer.onrender.com/${endpoint}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -106,7 +106,7 @@ const AddListItemForm = ({ listId }) => {
       };
 
       // Send a POST request to add the item to list_items
-      const response = await fetch(`http://localhost:5000/api/${username}/list-items`, {
+      const response = await fetch(`https://matrainer.onrender.com/api/${username}/list-items`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

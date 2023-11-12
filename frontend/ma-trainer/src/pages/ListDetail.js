@@ -19,37 +19,37 @@ const ListDetail = ({ match }) => {
   const [editingItemId, setEditingItemId] = useState(null);
 
 
-      // Fetch list items based on the listId
-      const fetchListItems = async () => {
-        try {
-          const token = localStorage.getItem('token');
-          const username = localStorage.getItem('username');
-  
-          if (!token) {
-            // Handle the case where the user is not authenticated
-            console.error('User not authenticated');
-            return;
-          }
-  
-          // Fetch the list items using the listId parameter
-          const response = await fetch(`http://localhost:5000/api/${username}/list-items/${listId}`, {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-            },
-          });
-  
-          if (response.status === 200) {
-            const listItemsData = await response.json();
-            setListItems(listItemsData);
-          } else {
-            // Handle the case where the list items are not found or other errors
-            console.error('Error fetching list items');
-          }
-        } catch (error) {
-          console.error('Error:', error);
-        }
+  // Fetch list items based on the listId
+  const fetchListItems = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const username = localStorage.getItem('username');
+
+      if (!token) {
+        // Handle the case where the user is not authenticated
+        console.error('User not authenticated');
+        return;
       }
+
+      // Fetch the list items using the listId parameter
+      const response = await fetch(`https://matrainer.onrender.com/api/${username}/list-items/${listId}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        const listItemsData = await response.json();
+        setListItems(listItemsData);
+      } else {
+        // Handle the case where the list items are not found or other errors
+        console.error('Error fetching list items');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
 
   useEffect(() => {
     // Fetch list data based on the listId
@@ -64,7 +64,7 @@ const ListDetail = ({ match }) => {
         }
 
         // Fetch the list data using the listId parameter
-        const response = await fetch(`http://localhost:5000/api/${username}/list/${listId}`, {
+        const response = await fetch(`https://matrainer.onrender.com/api/${username}/list/${listId}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -110,7 +110,7 @@ const ListDetail = ({ match }) => {
 
       // Perform the update request to save the edited item data on the server
       const response = await fetch(
-        `http://localhost:5000/api/${username}/list-items/${editedItem.id}`,
+        `https://matrainer.onrender.com/api/${username}/list-items/${editedItem.id}`,
         {
           method: 'PUT',
           headers: {
@@ -170,45 +170,45 @@ const ListDetail = ({ match }) => {
             List Items
           </Typography>
           <List>
-          {listItems.map((item) => (
-  <div key={item.id} style={{ display: 'flex', alignItems: 'center'}}>
-    <ListItem style={{ marginBottom: '10px', display: 'flex', alignItems: 'center' }}>
-      {editingItemId === item.id ? (
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <EditListItem
-            item={item}
-            onSave={handleSaveEditedItem}
-            onCancel={handleCancelEdit}
-          />
-        </div>
-      ) : (
-        <>
-          <ListItemText style={{ marginLeft: '10px', flex: '1' }}
-            primary={item.item_name}
-            secondary={item.item_type}
-          />
-          {item.notes && (
-            <Typography variant="body2" style={{ marginBottom: '5px' }} align="center">
-              Notes: {item.notes}
-            </Typography>
-          )}
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={() => handleEditItem(item.id)}
-            style={{ marginRight: '10px' }}
-          >
-            Edit
-          </Button>
-          <RemoveListItem itemId={item.id} onRemove={onRemove} />
-        </>
-      )}
-    </ListItem>
-    {listItems.indexOf(item) < listItems.length - 1 && (
-      <Divider />
-    )}
-  </div>
-))}
+            {listItems.map((item) => (
+              <div key={item.id} style={{ display: 'flex', alignItems: 'center' }}>
+                <ListItem style={{ marginBottom: '10px', display: 'flex', alignItems: 'center' }}>
+                  {editingItemId === item.id ? (
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <EditListItem
+                        item={item}
+                        onSave={handleSaveEditedItem}
+                        onCancel={handleCancelEdit}
+                      />
+                    </div>
+                  ) : (
+                    <>
+                      <ListItemText style={{ marginLeft: '10px', flex: '1' }}
+                        primary={item.item_name}
+                        secondary={item.item_type}
+                      />
+                      {item.notes && (
+                        <Typography variant="body2" style={{ marginBottom: '5px' }} align="center">
+                          Notes: {item.notes}
+                        </Typography>
+                      )}
+                      <Button
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => handleEditItem(item.id)}
+                        style={{ marginRight: '10px' }}
+                      >
+                        Edit
+                      </Button>
+                      <RemoveListItem itemId={item.id} onRemove={onRemove} />
+                    </>
+                  )}
+                </ListItem>
+                {listItems.indexOf(item) < listItems.length - 1 && (
+                  <Divider />
+                )}
+              </div>
+            ))}
           </List>
         </div>
       ) : (

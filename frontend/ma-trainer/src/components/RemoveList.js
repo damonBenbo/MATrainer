@@ -21,7 +21,7 @@ const RemoveList = ({ listId, onRemove }) => {
 
       // Make a DELETE request to remove the list
       const response = await axios.delete(
-        `http://localhost:5000/api/${username}/lists/${listId}`,
+        `https://matrainer.onrender.com/api/${username}/lists/${listId}`,
         {
           headers: {
             'Authorization': `Bearer ${token}`,
