@@ -4,14 +4,14 @@ const bodyParser = require('body-parser');
 const db = require('./db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const {secret} = require('/etc/secrets/secrets');
+const { secret } = require('/etc/secrets/secrets');
 const ensureLoggedIn = require('./ensureLoggedIn');
 const ensureAuth = require('./ensureAuth');
 
 const app = express();
 const port = 5000;
 
-app.use(cors({ origin: 'https://matrainer.onrender.com' })); // Adjust the origin as needed
+app.use(cors({ origin: 'https://matrainer-e0k8.onrender.com/' })); // Adjust the origin as needed
 app.use(bodyParser.json());
 
 // db.connect();
@@ -69,7 +69,7 @@ app.post('/api/login', async (req, res, next) => {
 
     if (user) {
       if (await bcrypt.compare(password, user.password) === true) {
-        let token = jwt.sign({ 
+        let token = jwt.sign({
           user_id: user.id, // Include user_id
           username: user.username // Include username
         }, secret);
@@ -88,7 +88,7 @@ app.get('/api/user/:username', ensureLoggedIn, (req, res) => {
 
   // Render or send data for the user's page
   const user = getUserByUsername(loggedInUsername);
-  
+
   if (!user) {
     res.status(404).json({ error: 'User not found' });
   } else {
@@ -191,7 +191,7 @@ app.get('/api/:username/list/:listId', ensureAuth, async (req, res) => {
 app.get('/api/:username/list-items/:listId', ensureAuth, (req, res) => {
   const { listId } = req.params;
   const user_id = req.user_id;
-  
+
   // Use username and listId in your database query to fetch the specific list items
   db.query('SELECT * FROM list_items WHERE user_id = $1 AND list_id = $2', [user_id, listId], (err, result) => {
     if (err) {
@@ -237,7 +237,7 @@ app.put('/api/:userId/list-items/:itemId', ensureAuth, async (req, res) => {
   const { item_name, item_type, notes } = req.body; // The updated item data sent in the request body
 
   try {
-    
+
     const user_id = req.user_id;
 
     // Define the SQL query to update the item
@@ -315,10 +315,10 @@ app.post('/api/techniques', (req, res) => {
   db.query(query, [name, description, video_url, created_by], (err, result) => {
     if (err) {
       console.error('Error adding technique', err);
-      res.status(500).json({ error: 'Error adding technique'});
+      res.status(500).json({ error: 'Error adding technique' });
     } else {
       console.log('Technique added successfully');
-      res.status(201).json({ message: 'Technique added successfully'});
+      res.status(201).json({ message: 'Technique added successfully' });
     }
   });
 });
@@ -337,16 +337,16 @@ app.get('/api/patterns', (req, res) => {
 
 // Adding patterns
 app.post('/api/patterns', (req, res) => {
-  const {name, description, video_url, created_by} = req.body;
+  const { name, description, video_url, created_by } = req.body;
   const query = 'INSERT INTO patterns (name, description, video_url, created_by) VALUES ($1, $2, $3, $4)';
 
   db.query(query, [name, description, video_url, created_by], (err, result) => {
     if (err) {
       console.error('Error adding pattern', err);
-      res.status(500).json({ error: 'Error adding pattern'});
+      res.status(500).json({ error: 'Error adding pattern' });
     } else {
       console.log('Pattern added successfully');
-      res.status(201).json({ message: 'Pattern added successfully'});
+      res.status(201).json({ message: 'Pattern added successfully' });
     }
   });
 });
@@ -365,16 +365,16 @@ app.get('/api/weapons', (req, res) => {
 
 // Adding weapons
 app.post('/api/weapons', (req, res) => {
-  const {name, description, img, created_by} = req.body;
+  const { name, description, img, created_by } = req.body;
   const query = 'INSERT INTO weapons (name, description, img, created_by) VALUES ($1, $2, $3, $4)';
 
   db.query(query, [name, description, img, created_by], (err, result) => {
     if (err) {
       console.error('Error adding weapon', err);
-      res.status(500).json({ error: 'Error adding weapon'});
+      res.status(500).json({ error: 'Error adding weapon' });
     } else {
       console.log('Weapon added successfully');
-      res.status(201).json({ message: 'Weapon added successfully'});
+      res.status(201).json({ message: 'Weapon added successfully' });
     }
   });
 });
@@ -405,16 +405,16 @@ app.get('/api/forms/names', (req, res) => {
 
 // Adding forms
 app.post('/api/forms', (req, res) => {
-  const {name, description, video_url, created_by} = req.body;
+  const { name, description, video_url, created_by } = req.body;
   const query = 'INSERT INTO forms (name, description, video_url, created_by) VALUES ($1, $2, $3, $4)';
 
   db.query(query, [name, description, video_url, created_by], (err, result) => {
     if (err) {
       console.error('Error adding form', err);
-      res.status(500).json({ error: 'Error adding form'});
+      res.status(500).json({ error: 'Error adding form' });
     } else {
       console.log('Form added successfully');
-      res.status(201).json({ message: 'Form added successfully'});
+      res.status(201).json({ message: 'Form added successfully' });
     }
   });
 });
