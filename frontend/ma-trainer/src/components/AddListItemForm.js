@@ -46,7 +46,7 @@ const AddListItemForm = ({ listId }) => {
         }
 
         // Fetch available items based on the selected category and listId
-        const response = await fetch(`https://matrainer.onrender.com/${endpoint}`, {
+        const response = await fetch(`https://matrainer.onrender.com${endpoint}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
