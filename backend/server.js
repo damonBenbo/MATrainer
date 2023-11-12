@@ -11,7 +11,7 @@ const ensureAuth = require('./ensureAuth');
 const app = express();
 const port = 5000;
 
-app.use(cors({ origin: 'https://matrainer-e0k8.onrender.com/' })); // Adjust the origin as needed
+app.use(cors({ origin: 'https://matrainer.onrender.com/' })); // Adjust the origin as needed
 app.use(bodyParser.json());
 
 // db.connect();
