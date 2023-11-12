@@ -3,9 +3,9 @@ import './Home.css';
 import useDataFetch from '../hooks/useDataFetch';
 
 function Home() {
-  const { data: techniques } = useDataFetch('http://localhost:5000/api/techniques');
-  const { data: weapons } = useDataFetch('http://localhost:5000/api/weapons');
-  const { data: forms } = useDataFetch('http://localhost:5000/api/forms');
+  const { data: techniques } = useDataFetch('https://matrainer.onrender.com/api/techniques');
+  const { data: weapons } = useDataFetch('https://matrainer.onrender.com/api/weapons');
+  const { data: forms } = useDataFetch('https://matrainer.onrender.com/api/forms');
 
   // Function to extract the YouTube video ID from the URL
   function getYouTubeVideoId(url) {
