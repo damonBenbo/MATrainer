@@ -19,7 +19,6 @@ const AddItemComponent = () => {
 
       if (response.status === 201) {
         // Item added successfully
-        window.location.reload();
       }
     } catch (error) {
       console.error('Error adding item:', error);
