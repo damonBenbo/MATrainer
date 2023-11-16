@@ -1,11 +1,25 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { TextField, Button, Typography, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import FlashMessage from './FlashMessage';
 
 const AddItemComponent = () => {
   const [itemName, setItemName] = useState('');
   const [itemDescription, setItemDescription] = useState('');
   const [category, setCategory] = useState('Weapon'); // Default category is Weapon
+  const [flashMessage, setFlashMessage] = useState(null); // Initialize as null
+  const [messageType, setMessageType] = useState(null);
+
+  const displayFlashMessage = (message, type) => {
+    setFlashMessage(message);
+    setMessageType(type);
+
+    // Clear the flash message after a certain time (e.g., 5 seconds)
+    setTimeout(() => {
+      setFlashMessage(null);
+      setMessageType(null);
+    }, 5000); // Adjust the timeout duration as needed
+  };
 
   const handleAddItemDB = async () => {
     try {
@@ -19,6 +33,7 @@ const AddItemComponent = () => {
 
       if (response.status === 201) {
         // Item added successfully
+        displayFlashMessage(`Item added successfully`, 'success');
       }
     } catch (error) {
       console.error('Error adding item:', error);
@@ -27,6 +42,17 @@ const AddItemComponent = () => {
 
   return (
     <div>
+      {/* Flash message */}
+      {flashMessage && (
+        <FlashMessage
+          message={flashMessage}
+          type={messageType}
+          onClose={() => {
+            setFlashMessage(null);
+            setMessageType(null);
+          }}
+        />
+      )}
       <Typography variant="h5">Add New Item</Typography>
       <FormControl fullWidth variant="outlined" style={{ marginBottom: '16px' }}>
         <InputLabel>Select Category</InputLabel>
