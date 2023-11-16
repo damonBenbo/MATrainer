@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { TextField, Button, Typography, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
-import FlashMessage from './FlashMessage';
 
 const AddItemComponent = () => {
   const [itemName, setItemName] = useState('');
